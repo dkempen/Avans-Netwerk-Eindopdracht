@@ -24,9 +24,9 @@ public class Frame extends JFrame {
     public Frame() {
         super("Blokus");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(1280, 720));
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
+        setMinimumSize(new Dimension(1000, 800));
+        setResizable(false);
+        setLocationRelativeTo(null);
         addListeners();
 
         setPanel(0);
