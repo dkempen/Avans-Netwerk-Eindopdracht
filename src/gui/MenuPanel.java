@@ -13,12 +13,23 @@ public class MenuPanel extends JPanel implements Panel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.BLACK);
         g2d.drawString("MenuPanel", 10, 20);
+        g2d.drawString("1 = Host Game", 10, 40);
+        g2d.drawString("2 = Join Game", 10, 60);
     }
 
     @Override
     public void handleKeys(KeyEvent keyEvent) {
-        if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
-            Frame.getInstance().setPanel(1);
+        switch (keyEvent.getKeyCode()) {
+            case KeyEvent.VK_ENTER:
+                Frame.getInstance().setPanel(1);
+                break;
+            case KeyEvent.VK_1:
+                Frame.getInstance().setPanel(2);
+                break;
+            case KeyEvent.VK_2:
+                Frame.getInstance().setPanel(3);
+                break;
+        }
     }
 
     @Override

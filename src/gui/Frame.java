@@ -13,6 +13,9 @@ public class Frame extends JFrame {
 
     MenuPanel menuPanel = new MenuPanel(); // 0
     GamePanel gamePanel = new GamePanel(); // 1
+    HostGamePanel hostGamePanel = new HostGamePanel(); // 2
+    JoinGamePanel joinGamePanel = new JoinGamePanel(); // 3
+    LobbyPanel lobbyPanel = new LobbyPanel(); // 4
     Panel currentPanel;
 
     public static Frame getInstance() {
@@ -41,6 +44,19 @@ public class Frame extends JFrame {
             case 1: // GamePanel
                 setPanel(gamePanel);
                 gamePanel.initGame();
+                break;
+            case 2: // hostGamePanel
+                setPanel(hostGamePanel);
+                break;
+            case 3: // JoinGamePanel
+                setPanel(joinGamePanel);
+                break;
+            case 4: // LobbyPanel
+                if (currentPanel instanceof HostGamePanel) // If it came from host, then host a game
+                    lobbyPanel.initHost();
+                else
+                    lobbyPanel.initClient();
+                setPanel(lobbyPanel);
                 break;
             default: // Psych! That's the wrong number!
                 System.out.println("Panel number doesn't exist!");
