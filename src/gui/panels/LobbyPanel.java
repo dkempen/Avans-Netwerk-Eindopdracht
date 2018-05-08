@@ -1,5 +1,6 @@
-package gui;
+package gui.panels;
 
+import gui.Panel;
 import network.Client;
 import network.Server;
 

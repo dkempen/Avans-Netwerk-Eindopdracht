@@ -1,11 +1,14 @@
-package gui;
+package gui.panels;
+
+import gui.Frame;
+import gui.PanelType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class MenuPanel extends JPanel implements Panel {
+public class MenuPanel extends JPanel implements gui.Panel {
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -21,13 +24,13 @@ public class MenuPanel extends JPanel implements Panel {
     public void handleKeys(KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                Frame.getInstance().setPanel(1);
+                gui.Frame.getInstance().setPanel(PanelType.GAME_PANEL);
                 break;
             case KeyEvent.VK_1:
-                Frame.getInstance().setPanel(2);
+                gui.Frame.getInstance().setPanel(PanelType.HOST_GAME_PANEL);
                 break;
             case KeyEvent.VK_2:
-                Frame.getInstance().setPanel(3);
+                Frame.getInstance().setPanel(PanelType.JOIN_GAME_PANEL);
                 break;
         }
     }

@@ -1,6 +1,6 @@
 package network;
 
-import gui.LobbyPanel;
+import gui.panels.LobbyPanel;
 
 import java.io.*;
 import java.net.*;

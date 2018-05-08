@@ -1,4 +1,4 @@
-package gui;
+package gui.panels;
 
 public class EndPanel {
 }

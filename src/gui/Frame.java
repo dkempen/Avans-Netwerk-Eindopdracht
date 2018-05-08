@@ -1,5 +1,7 @@
 package gui;
 
+import gui.panels.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -9,14 +11,14 @@ import java.awt.event.MouseEvent;
 
 public class Frame extends JFrame {
 
-    static Frame instance = null;
+    private static Frame instance = null;
 
-    MenuPanel menuPanel = new MenuPanel(); // 0
-    GamePanel gamePanel = new GamePanel(); // 1
-    HostGamePanel hostGamePanel = new HostGamePanel(); // 2
-    JoinGamePanel joinGamePanel = new JoinGamePanel(); // 3
-    LobbyPanel lobbyPanel = new LobbyPanel(); // 4
-    Panel currentPanel;
+    private MenuPanel menuPanel = new MenuPanel();
+    private GamePanel gamePanel = new GamePanel();
+    private HostGamePanel hostGamePanel = new HostGamePanel();
+    private JoinGamePanel joinGamePanel = new JoinGamePanel();
+    private LobbyPanel lobbyPanel = new LobbyPanel();
+    private Panel currentPanel;
 
     public static Frame getInstance() {
         if (instance == null)
@@ -24,7 +26,7 @@ public class Frame extends JFrame {
         return instance;
     }
 
-    public Frame() {
+    private Frame() {
         super("Blokus");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1000, 800));
@@ -32,34 +34,34 @@ public class Frame extends JFrame {
         setLocationRelativeTo(null);
         addListeners();
 
-        setPanel(0);
+        setPanel(PanelType.MENU_PANEL);
         setVisible(true);
     }
 
-    public void setPanel(int panelNumber) {
-        switch (panelNumber) {
-            case 0: // MenuPanel
+    public void setPanel(PanelType panelType) {
+        switch (panelType) {
+            case MENU_PANEL:
                 setPanel(menuPanel);
                 break;
-            case 1: // GamePanel
+            case GAME_PANEL:
                 setPanel(gamePanel);
                 gamePanel.initGame();
                 break;
-            case 2: // hostGamePanel
+            case HOST_GAME_PANEL:
                 setPanel(hostGamePanel);
                 break;
-            case 3: // JoinGamePanel
+            case JOIN_GAME_PANEL:
                 setPanel(joinGamePanel);
                 break;
-            case 4: // LobbyPanel
+            case LOBBY_PANEL:
                 if (currentPanel instanceof HostGamePanel) // If it came from host, then host a game
                     lobbyPanel.initHost();
                 else
                     lobbyPanel.initClient();
                 setPanel(lobbyPanel);
                 break;
-            default: // Psych! That's the wrong number!
-                System.out.println("Panel number doesn't exist!");
+            default: // Psych! That's the wrong panel!
+                System.out.println("Panel doesn't exist!");
                 break;
         }
     }
