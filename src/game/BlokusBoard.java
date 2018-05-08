@@ -79,4 +79,15 @@ public class BlokusBoard {
         }
         return true;
     }
+
+    public static Color getColor(int color){
+
+        switch(color){
+            case BLUE: return Color.BLUE;
+            case GREEN: return Color.GREEN;
+            case RED: return Color.RED;
+            case YELLOW: return Color.YELLOW;
+            default: return BOARD_COLOR;
+        }
+    }
 }
