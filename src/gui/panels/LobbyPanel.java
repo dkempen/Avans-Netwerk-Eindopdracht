@@ -11,15 +11,11 @@ import java.awt.event.MouseEvent;
 
 public class LobbyPanel extends JPanel implements Panel {
 
-    private Server server;
-    private Client client;
-
     private JTextArea jTextArea;
 
     public LobbyPanel() {
         setLayout(new BorderLayout());
         jTextArea = new JTextArea();
-        jTextArea.append("test\n");
         add(new JScrollPane(jTextArea), BorderLayout.CENTER);
         revalidate();
         repaint();
@@ -36,16 +32,15 @@ public class LobbyPanel extends JPanel implements Panel {
     }
 
     public void initHost() {
-        server = new Server(this, 8000);
+        Server.getInstance().start(8000);
     }
 
     public void initClient() {
-        client = new Client(this, 8000);
+        Client.getInstance().start(8000);
     }
 
-    public void setjTextArea(JTextArea jTextArea) {
-        System.out.println("set");
-        this.jTextArea.setText(jTextArea.getText());
+    public void setjTextArea(String message) {
+        jTextArea.append(message + "\n");
         invalidate();
         revalidate();
         repaint();

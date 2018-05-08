@@ -1,6 +1,7 @@
 package gui;
 
 import gui.panels.*;
+import network.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,5 +90,14 @@ public class Frame extends JFrame {
                 currentPanel.handleMouse(e);
             }
         });
+    }
+
+    public void handleServerLog(String log) {
+        lobbyPanel.setjTextArea(log);
+    }
+
+    public void handleClientLog(String log) {
+        if (!Server.getInstance().isActive())
+            lobbyPanel.setjTextArea(log);
     }
 }

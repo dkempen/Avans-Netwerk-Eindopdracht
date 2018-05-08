@@ -1,57 +1,62 @@
 package network;
 
-import gui.panels.LobbyPanel;
+import gui.Frame;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import javax.swing.*;
 
 public class Server {
-    // Text area for displaying contents
-    private JTextArea jTextArea = new JTextArea();
-    private LobbyPanel lobbyPanel;
 
-    public Server(LobbyPanel lobbyPanel, int port) {
-        this.lobbyPanel = lobbyPanel;
+    private static Server instance = null;
+    private boolean isActive = false;
+
+    private ArrayList<Player> players;
+
+    public static Server getInstance() {
+        if (instance == null)
+            instance = new Server();
+        return instance;
+    }
+
+    private Server() {}
+
+    public void start(int port) {
+        isActive = true;
         new Thread(() -> {
             try {
                 // Create a server socket
                 ServerSocket serverSocket = new ServerSocket(port);
+                players = new ArrayList<>();
 
-                jTextArea.append("Server started at " + new Date() + '\n');
-                System.out.println("Server started at " + new Date() + '\n');
-                lobbyPanel.setjTextArea(jTextArea);
+                log("Server started at " + new Date());
 
                 // Number a client
                 int clientNo = 1;
 
-                System.out.println("listening...");
+                log("listening for clients...");
+
+                // Start client on host's window
+                new Thread(() -> Client.getInstance().start(port)).start();
 
                 while (true) {
                     // Listen for a new connection request
                     Socket socket = serverSocket.accept();
+                    players.add(new Player(socket));
 
                     // Display the client number
-                    jTextArea.append("Starting thread for client " + clientNo +
-                            " at " + new Date() + '\n');
-                    lobbyPanel.setjTextArea(jTextArea);
+                    log("Client " + clientNo + " connected at " + new Date());
 
                     // Find the client's host name, and IP address
                     InetAddress inetAddress = socket.getInetAddress();
-                    jTextArea.append("TestClient " + clientNo + "'s host name is "
-                            + inetAddress.getHostName() + "\n");
-                    jTextArea.append("TestClient " + clientNo + "'s IP Address is "
-                            + inetAddress.getHostAddress() + "\n");
-                    lobbyPanel.setjTextArea(jTextArea);
+                    log("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
+                    log("Client " + clientNo + "'s IP Address is " + inetAddress.getHostAddress());
 
-                    // Create a new thread for the connection
-                    HandleAClient task = new HandleAClient(socket);
+                    if (clientNo >= 2) {
+                        startGame();
+                        return;
+                    }
 
-                    // Start the new thread
-                    new Thread(task).start();
-
-                    // Increment clientNo
                     clientNo++;
                 }
             }
@@ -59,6 +64,31 @@ public class Server {
                 System.err.println(ex);
             }
         }).start();
+    }
+
+    private void log(String message) {
+        Frame.getInstance().handleServerLog(message);
+    }
+
+    private void startGame() {
+        notifyAllStart();
+        try {
+            String string = players.get(0).input().readUTF();
+            log("Read " + string + " from player 1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyAllStart() {
+        for (Player player : players) {
+            try {
+                player.output().writeUTF("start");
+                log("notified player that the game has started");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Inner class
@@ -91,15 +121,18 @@ public class Server {
                     // Send area back to the client
                     outputToClient.writeDouble(area);
 
-                    jTextArea.append("radius received from client: " +
+                    log("radius received from client: " +
                             radius + '\n');
-                    jTextArea.append("Area found: " + area + '\n');
-                    lobbyPanel.setjTextArea(jTextArea);
+                    log("Area found: " + area + '\n');
                 }
             }
             catch(IOException e) {
                 System.err.println(e);
             }
         }
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }
