@@ -18,6 +18,7 @@ public class LobbyPanel extends JPanel implements Panel {
     public LobbyPanel() {
         setLayout(new BorderLayout());
         jTextArea = new JTextArea();
+        jTextArea.append("test\n");
         add(new JScrollPane(jTextArea), BorderLayout.CENTER);
         revalidate();
         repaint();
@@ -43,7 +44,8 @@ public class LobbyPanel extends JPanel implements Panel {
 
     public void setjTextArea(JTextArea jTextArea) {
         System.out.println("set");
-        this.jTextArea = jTextArea;
+        this.jTextArea.setText(jTextArea.getText());
+        invalidate();
         revalidate();
         repaint();
     }
