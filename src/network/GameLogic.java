@@ -21,11 +21,7 @@ class GameLogic {
         grid = new int[BlokusBoard.BOARD_SIZE][BlokusBoard.BOARD_SIZE];
     }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
-    }
-
-    void notifyAllStart() {
+    public void sendStartUpdate() {
         for (Player player : players) {
             try {
                 // notify that the game has started, the client id, and who's turn it is
@@ -40,12 +36,26 @@ class GameLogic {
         current = players.get(0);
     }
 
-    public Player getCurrent() {
-        return current;
+    public void sendUpdate() {
+        String message = "turn=" + current.getId() + Arrays.deepToString(grid);
+        for (Player player : players) {
+            try {
+                player.output().writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void setCurrent(Player current) {
-        this.current = current;
+    public void sendEndUpdate() {
+        String message = "end/" + getScores() + "/winner=" + getWinnerId();
+        for (Player player : players) {
+            try {
+                player.output().writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setNewGrid(String gridString) {
@@ -53,13 +63,61 @@ class GameLogic {
         Scanner scanner = new Scanner(gridString).useDelimiter("[^\\d]+");
         int x = 0;
         int y = 0;
-
+        //noinspection Duplicates
         while (scanner.hasNext()) {
             newGrid[x][y] = scanner.nextInt();
             x++;
-            if (x >= BlokusBoard.BOARD_SIZE)
+            if (x >= BlokusBoard.BOARD_SIZE) {
                 x = 0;
+                y++;
+            }
         }
         grid = newGrid;
+    }
+
+    public boolean checkForEnd() {
+        for (Player player : players)
+            if (!player.hasSurrendered())
+                return false;
+        return true;
+    }
+
+    public void nextTurn() {
+        while (true) {
+            int currentIndex = players.indexOf(current);
+            if (currentIndex >= players.size())
+                currentIndex = -1;
+            current = players.get(currentIndex + 1);
+            if (!current.hasSurrendered())
+                return;
+        }
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public Player getCurrent() {
+        return current;
+    }
+
+    private String getScores() {
+        StringBuilder scores = new StringBuilder("[");
+        for (Player player : players)
+            scores.append(player.getScore()).append(", ");
+        scores.append("]");
+        return scores.toString();
+    }
+
+    private int getWinnerId() {
+        int id = 0;
+        int highScore = -1;
+        for (Player player : players) {
+            if (player.getScore() > highScore) {
+                highScore = player.getScore();
+                id = player.getId();
+            }
+        }
+        return id;
     }
 }

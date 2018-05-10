@@ -47,4 +47,12 @@ public class Blokus {
     public void flip() {
 
     }
+
+    public BlokusBoard getBoard() {
+        return board;
+    }
+
+    public BlokusPlayer getPlayer(int id) {
+        return players[id - 1];
+    }
 }

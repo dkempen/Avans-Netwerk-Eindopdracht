@@ -13,13 +13,13 @@ public class Server {
 
     private GameLogic gameLogic;
 
+    private Server() {}
+
     public static Server getInstance() {
         if (instance == null)
             instance = new Server();
         return instance;
     }
-
-    private Server() {}
 
     public void start(int port) {
         isActive = true;
@@ -61,83 +61,52 @@ public class Server {
                     clientNo++;
                 }
             }
-            catch(IOException ex) {
-                System.err.println(ex);
+            catch(IOException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
     private void startGame() {
         // Server sends start message to all clients
-        gameLogic.notifyAllStart();
+        gameLogic.sendStartUpdate();
 
         // Server waits for a response when a turn is made and loops for the entire game
         while (true) {
             try {
-                String newTurn = gameLogic.getCurrent().input().readUTF();
-                switch (getIntent(newTurn)[0]) {
+                String message = gameLogic.getCurrent().input().readUTF();
+                switch (splitMessage(message)[0]) {
                     case "turn":
-                        gameLogic.setNewGrid(getIntent(newTurn)[1]);
+                        gameLogic.setNewGrid(splitMessage(message)[1]);
+                        gameLogic.nextTurn();
+                        gameLogic.sendUpdate();
                         break;
                     case "surrender":
+                        gameLogic.getCurrent().surrender(Integer.parseInt(splitMessage(message)[1]));
+                        // check if the game has ended when all of the player have surrendered
+                        if (!gameLogic.checkForEnd()) {
+                            gameLogic.nextTurn();
+                            gameLogic.sendUpdate();
+                        } else {
+                            gameLogic.sendEndUpdate();
+                            return;
+                        }
                         break;
                     default:
-                        System.out.println("Turn isn't recognized");
+                        System.out.println("Message isn't recognized");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private String[] getIntent(String message) {
+    private String[] splitMessage(String message) {
         return message.split("/");
     }
 
     void log(String message) {
         Frame.getInstance().handleServerLog(message);
-    }
-
-    // Inner class
-    // Define the thread class for handling new connection
-    class HandleAClient implements Runnable {
-        private Socket socket; // A connected socket
-
-        /** Construct a thread */
-        HandleAClient(Socket socket) {
-            this.socket = socket;
-        }
-
-        /** Run a thread */
-        public void run() {
-            try {
-                // Create data input and output streams
-                DataInputStream inputFromClient = new DataInputStream(
-                        socket.getInputStream());
-                DataOutputStream outputToClient = new DataOutputStream(
-                        socket.getOutputStream());
-
-                // Continuously serve the client
-                while (true) {
-                    // Receive radius from the client
-                    double radius = inputFromClient.readDouble();
-
-                    // Compute area
-                    double area = radius * radius * Math.PI;
-
-                    // Send area back to the client
-                    outputToClient.writeDouble(area);
-
-                    log("radius received from client: " +
-                            radius + '\n');
-                    log("Area found: " + area + '\n');
-                }
-            }
-            catch(IOException e) {
-                System.err.println(e);
-            }
-        }
     }
 
     public boolean isActive() {
