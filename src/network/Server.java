@@ -11,7 +11,7 @@ public class Server {
     private static Server instance = null;
     private boolean isActive = false;
 
-    private ArrayList<Player> players;
+    private GameLogic gameLogic;
 
     public static Server getInstance() {
         if (instance == null)
@@ -23,11 +23,12 @@ public class Server {
 
     public void start(int port) {
         isActive = true;
+        gameLogic = new GameLogic(this);
+
         new Thread(() -> {
             try {
                 // Create a server socket
                 ServerSocket serverSocket = new ServerSocket(port);
-                players = new ArrayList<>();
 
                 log("Server started at " + new Date());
 
@@ -42,7 +43,7 @@ public class Server {
                 while (true) {
                     // Listen for a new connection request
                     Socket socket = serverSocket.accept();
-                    players.add(new Player(socket));
+                    gameLogic.getPlayers().add(new Player(socket, clientNo));
 
                     // Display the client number
                     log("Client " + clientNo + " connected at " + new Date());
@@ -66,29 +67,36 @@ public class Server {
         }).start();
     }
 
-    private void log(String message) {
-        Frame.getInstance().handleServerLog(message);
-    }
-
     private void startGame() {
-        notifyAllStart();
-        try {
-            String string = players.get(0).input().readUTF();
-            log("Read " + string + " from player 1");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+        // Server sends start message to all clients
+        gameLogic.notifyAllStart();
 
-    private void notifyAllStart() {
-        for (Player player : players) {
+        // Server waits for a response when a turn is made and loops for the entire game
+        while (true) {
             try {
-                player.output().writeUTF("start");
-                log("notified player that the game has started");
-            } catch (IOException e) {
+                String newTurn = gameLogic.getCurrent().input().readUTF();
+                switch (getIntent(newTurn)[0]) {
+                    case "turn":
+                        gameLogic.setNewGrid(getIntent(newTurn)[1]);
+                        break;
+                    case "surrender":
+                        break;
+                    default:
+                        System.out.println("Turn isn't recognized");
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String[] getIntent(String message) {
+        return message.split("/");
+    }
+
+    void log(String message) {
+        Frame.getInstance().handleServerLog(message);
     }
 
     // Inner class
