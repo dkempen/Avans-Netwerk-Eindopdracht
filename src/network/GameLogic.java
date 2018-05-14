@@ -37,7 +37,7 @@ class GameLogic {
     }
 
     public void sendUpdate() {
-        String message = "turn=" + current.getId() + Arrays.deepToString(grid);
+        String message = "turn=" + current.getId() + "/" + Arrays.deepToString(grid);
         for (Player player : players) {
             try {
                 player.output().writeUTF(message);
@@ -85,7 +85,7 @@ class GameLogic {
     public void nextTurn() {
         while (true) {
             int currentIndex = players.indexOf(current);
-            if (currentIndex >= players.size())
+            if (currentIndex >= players.size() - 1)
                 currentIndex = -1;
             current = players.get(currentIndex + 1);
             if (!current.hasSurrendered())

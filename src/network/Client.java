@@ -3,6 +3,7 @@ package network;
 import game.Blokus;
 import game.BlokusBoard;
 import gui.Frame;
+import gui.PanelType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,6 +27,7 @@ public class Client {
     private boolean isMyTurn;
     private boolean readyToUpdate;
     private boolean hasSurrendered;
+    private boolean skipStart;
 
     private Client() {
     }
@@ -51,15 +53,17 @@ public class Client {
 
                 // Waiting for start command
                 String startupString = fromServer.readUTF();
-                blokus = new Blokus();
                 handleStartup(startupString);
 
                 //noinspection InfiniteLoopStatement
                 while (true) {
-                    String updateString = fromServer.readUTF();
-                    String[] update = splitMessage(updateString);
-                    updateGrid(update[1]);
-                    checkForTurn(update[0]);
+                    if (!skipStart) {
+                        String updateString = fromServer.readUTF();
+                        String[] update = splitMessage(updateString);
+                        updateGrid(update[1]);
+                        checkForTurn(update[0]);
+                    }
+                    skipStart = false;
 
                     // If it's not my turn, continue
                     if (!isMyTurn)
@@ -81,7 +85,7 @@ public class Client {
                         toServer.writeUTF("turn/" + Arrays.deepToString(blokus.getBoard().getGrid()));
                     } else {
                         // When the player has surrendered update the server
-                        toServer.writeUTF("surrender/" + blokus.getPlayer(id).getScore());
+                        toServer.writeUTF("surrender/" + blokus.getPlayer().getScore());
                     }
                 }
 
@@ -106,6 +110,7 @@ public class Client {
             }
         }
         blokus.getBoard().setGrid(newGrid);
+        Frame.getInstance().getGamePanel().repaint();
     }
 
     private void handleStartup(String startupString) {
@@ -115,6 +120,14 @@ public class Client {
 
         setId(message[1]);
         checkForTurn(message[2]);
+        if (isMyTurn)
+            skipStart = true;
+        blokus = new Blokus(this);
+        Frame.getInstance().setPanel(PanelType.GAME_PANEL);
+
+        // test
+        setReadyToUpdate(false);
+
     }
 
     private String[] splitMessage(String message) {
@@ -130,6 +143,7 @@ public class Client {
         isMyTurn = turnId == id;
     }
 
+    // Call when player ended his turn
     public void setReadyToUpdate(boolean hasSurrendered) {
         synchronized (this) {
             readyToUpdate = true;
@@ -149,5 +163,13 @@ public class Client {
             log("remote socket address: " + s.getRemoteSocketAddress());
         } catch (Exception ignored) {
         }
+    }
+
+    public boolean isMyTurn() {
+        return isMyTurn;
+    }
+
+    public int getId() {
+        return id;
     }
 }

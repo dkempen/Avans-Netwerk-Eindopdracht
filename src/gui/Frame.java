@@ -46,7 +46,6 @@ public class Frame extends JFrame {
                 break;
             case GAME_PANEL:
                 setPanel(gamePanel);
-                gamePanel.initGame();
                 break;
             case HOST_GAME_PANEL:
                 setPanel(hostGamePanel);
@@ -72,6 +71,10 @@ public class Frame extends JFrame {
         setContentPane((JPanel) panel);
         revalidate();
         repaint();
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     private void addListeners() {

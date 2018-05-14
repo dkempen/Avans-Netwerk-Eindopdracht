@@ -92,6 +92,7 @@ public class BlokusBoard {
     }
 
     public int[][] getGrid() {
+        grid[1][1] = BLUE;
         return grid;
     }
 

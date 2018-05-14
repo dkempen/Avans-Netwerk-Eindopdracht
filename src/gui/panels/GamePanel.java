@@ -1,6 +1,7 @@
 package gui.panels;
 
 import game.Blokus;
+import game.BlokusPiece;
 import gui.Frame;
 import gui.PanelType;
 
@@ -12,19 +13,36 @@ import java.awt.event.MouseEvent;
 public class GamePanel extends JPanel implements gui.Panel {
 
     Blokus blokus;
+    private JPanel piecesPanel;
 
-    public void initGame() {
-        blokus = new Blokus();
+    public GamePanel() {
+        setLayout(new FlowLayout());
+        JPanel panel = new JPanel();
+        add(panel);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
-        g2d.drawString("GamePanel", 10, 20);
+    public void init(Blokus blokus) {
+        this.blokus = blokus;
+        GameRenderPanel gameRenderPanel = new GameRenderPanel(this);
+        setLayout(new BorderLayout());
 
-        blokus.draw(g2d);
+        JScrollPane jScrollPane = initScrollPane();
+
+        add(jScrollPane, BorderLayout.WEST);
+        add(gameRenderPanel, BorderLayout.CENTER);
+    }
+
+    private JScrollPane initScrollPane() {
+        piecesPanel = new JPanel();
+        piecesPanel.setLayout(new BoxLayout(piecesPanel, BoxLayout.Y_AXIS));
+        JScrollPane jScrollPane = new JScrollPane(piecesPanel);
+        jScrollPane.setPreferredSize(new Dimension(BlokusPiece.DEFAULT_RESOLUTION, BlokusPiece.DEFAULT_RESOLUTION));
+
+        return jScrollPane;
+    }
+
+    public JPanel getPiecesPanel() {
+        return piecesPanel;
     }
 
     @Override
