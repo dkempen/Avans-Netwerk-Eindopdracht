@@ -99,4 +99,75 @@ public class BlokusBoard {
     public void setGrid(int[][] grid) {
         this.grid = grid;
     }
+
+    public void placePiece(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove){
+        isValidMove(bp,xOffset,yOffset);
+
+        for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++){
+                for(int y = 0; y < BlokusPiece.SHAPE_SIZE; y++){
+                    if (bp.getValue(x,y)== BlokusPiece.PIECE) grid[x + xOffset][y + yOffset] = bp.getColor();
+                }
+        }
+    }
+
+    private boolean isInBounds(int x, int y){
+        return (x >= 0 && y >=0 && x < BOARD_SIZE && y < BOARD_SIZE);
+    }
+    public boolean isValidMove(BlokusPiece bp,int xOffset,int yOffset){
+        return isValidMove(bp,xOffset,yOffset,false);
+    }
+
+    private Point getCorner(int color){
+
+        switch (color){
+
+            case BLUE: return new Point(0,0);
+            case GREEN: return new Point(0, BOARD_SIZE -1);
+            case RED: return new Point(BOARD_SIZE - 1, 0);
+            case YELLOW: return new Point(BOARD_SIZE -1 , BOARD_SIZE - 1);
+            default:
+        }
+        return null;
+    }
+
+    public boolean isValidMove(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) {
+
+        boolean corner = false;
+        for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++) {
+
+            for (int y = 0; y < BlokusPiece.SHAPE_SIZE; y++) {
+
+                int value = bp.getValue(x, y);
+                boolean inBounds = isInBounds(x + xOffset, y + yOffset);
+
+                if (inBounds) {
+                    int gridValue = grid[x + xOffset][y + yOffset];
+
+                    if (gridValue != NONE) {
+                        //if (value == BlokusPiece.PIECE)
+                        if (gridValue == bp.getColor()) {
+                            //if (value == BlokusPiece.ADJACENT)
+                            if (value == BlokusPiece.CORNER) corner = true;
+                        }
+                    } else if (firstMove && value == BlokusPiece.PIECE && new Point(x + xOffset, y + yOffset).equals(getCorner(bp.getColor()))) {
+                        corner = true;
+                    }
+
+                } else {
+                    if (value == BlokusPiece.PIECE) {
+                    }
+
+
+                }
+
+            }
+        }
+        if (!corner){}
+
+        return true;
+    }
+
+
 }
+
+
