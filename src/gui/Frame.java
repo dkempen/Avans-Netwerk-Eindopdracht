@@ -5,10 +5,7 @@ import network.Server;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class Frame extends JFrame {
 
@@ -90,7 +87,15 @@ public class Frame extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                currentPanel.handleMouse(e);
+                currentPanel.handleMouseClick(e);
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                currentPanel.handleMouseMove(e);
             }
         });
     }

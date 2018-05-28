@@ -12,8 +12,9 @@ import java.awt.event.MouseEvent;
 
 public class GamePanel extends JPanel implements gui.Panel {
 
-    Blokus blokus;
+    private Blokus blokus;
     private JPanel piecesPanel;
+    private GameRenderPanel gameRenderPanel;
 
     public GamePanel() {
         setLayout(new FlowLayout());
@@ -23,7 +24,7 @@ public class GamePanel extends JPanel implements gui.Panel {
 
     public void init(Blokus blokus) {
         this.blokus = blokus;
-        GameRenderPanel gameRenderPanel = new GameRenderPanel(this);
+        gameRenderPanel = new GameRenderPanel(this);
         setLayout(new BorderLayout());
 
         JScrollPane jScrollPane = initScrollPane();
@@ -53,7 +54,20 @@ public class GamePanel extends JPanel implements gui.Panel {
     }
 
     @Override
-    public void handleMouse(MouseEvent mouseEvent) {
+    public void handleMouseClick(MouseEvent mouseEvent) {
+        blokus.handleMouseClick();
+    }
 
+    @Override
+    public void handleMouseMove(MouseEvent mouseEvent) {
+        blokus.handleMouseMove(mouseEvent);
+    }
+
+    public GameRenderPanel getGameRenderPanel() {
+        return gameRenderPanel;
+    }
+
+    public Blokus getBlokus() {
+        return blokus;
     }
 }

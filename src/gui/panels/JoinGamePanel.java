@@ -16,7 +16,12 @@ public class JoinGamePanel extends JPanel implements Panel {
     }
 
     @Override
-    public void handleMouse(MouseEvent mouseEvent) {
+    public void handleMouseClick(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void handleMouseMove(MouseEvent mouseEvent) {
 
     }
 }

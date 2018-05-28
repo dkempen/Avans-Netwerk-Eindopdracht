@@ -2,10 +2,12 @@ package game;
 
 import gui.Frame;
 import gui.panels.GamePanel;
+import gui.panels.GameRenderPanel;
 import network.Client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class Blokus {
 
@@ -14,14 +16,15 @@ public class Blokus {
     private BlokusBoard board;
     private BlokusPlayer player;
     private GamePanel gamePanel;
+    private Point selected;
+    private int selectedPieceIndex;
 
     public Blokus(Client client) {
         this.client = client;
         initGame();
-    }
 
-    public void draw(Graphics2D g2d) {
-        board.draw(g2d);
+        // Test
+        selectedPieceIndex = 0;
     }
 
     private void initGame() {
@@ -38,8 +41,12 @@ public class Blokus {
         gamePanel.init(this);
     }
 
-    public void drawBoard() {
+    public void draw(Graphics2D g2d) {
+        g2d.drawImage(board.draw(), 0, 0, null);
+    }
 
+    private void repaint() {
+        Frame.getInstance().getGamePanel().getGameRenderPanel().repaint();
     }
 
     public void startNewTurn() {
@@ -56,7 +63,9 @@ public class Blokus {
     }
 
     public void rotateClockwise() {
-
+        player.getPieces().get(selectedPieceIndex).rotateClockwise();
+        board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
+        repaint();
     }
 
     public void rotateCounterClockwise() {
@@ -65,6 +74,38 @@ public class Blokus {
 
     public void flip() {
 
+    }
+
+    private Point getPointOnBoard(Point point) {
+        return new Point((point.x - 123) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE),
+                (point.y - 32) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE));
+    }
+
+    public void handleMouseMove(MouseEvent e) {
+        Point p = getPointOnBoard(e.getPoint());
+        if (!p.equals(selected)) {
+            selected = p;
+            board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
+            repaint();
+        }
+    }
+
+    public void handleMouseClick() {
+        System.out.println("click");
+        try {
+            board.placePiece(player.getPieces().get(selectedPieceIndex),
+                    selected.x - BlokusPiece.SHAPE_SIZE / 2,
+                    selected.y - BlokusPiece.SHAPE_SIZE / 2,
+                    player.isFirstMove());
+            player.getPieces().remove(selectedPieceIndex);
+            player.setFirstMove(false);
+            player.setCanPlay(player.getPieces().size() != 0);
+            startNewTurn();
+            repaint();
+            Client.getInstance().setReadyToUpdate(false);
+        } catch (BlokusBoard.IllegalMoveException ex) {
+            System.out.println((ex.getMessage()));
+        }
     }
 
     public BlokusBoard getBoard() {

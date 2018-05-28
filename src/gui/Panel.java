@@ -5,5 +5,6 @@ import java.awt.event.MouseEvent;
 
 public interface Panel {
     void handleKeys(KeyEvent keyEvent);
-    void handleMouse(MouseEvent mouseEvent);
+    void handleMouseClick(MouseEvent mouseEvent);
+    void handleMouseMove(MouseEvent mouseEvent);
 }

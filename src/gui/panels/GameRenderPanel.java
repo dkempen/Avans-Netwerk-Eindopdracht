@@ -7,7 +7,7 @@ public class GameRenderPanel extends JPanel {
 
     private GamePanel gamePanel;
 
-    public GameRenderPanel(GamePanel gamePanel) {
+    GameRenderPanel(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
@@ -18,6 +18,6 @@ public class GameRenderPanel extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.drawString("GamePanel", 10, 20);
 
-        gamePanel.blokus.draw(g2d);
+        gamePanel.getBlokus().draw(g2d);
     }
 }

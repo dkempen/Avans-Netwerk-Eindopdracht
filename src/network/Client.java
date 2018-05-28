@@ -27,7 +27,7 @@ public class Client {
     private boolean isMyTurn;
     private boolean readyToUpdate;
     private boolean hasSurrendered;
-    private boolean skipStart;
+    private boolean isBeginTurn;
 
     private Client() {
     }
@@ -57,13 +57,13 @@ public class Client {
 
                 //noinspection InfiniteLoopStatement
                 while (true) {
-                    if (!skipStart) {
+                    if (!isBeginTurn) {
                         String updateString = fromServer.readUTF();
                         String[] update = splitMessage(updateString);
                         updateGrid(update[1]);
                         checkForTurn(update[0]);
                     }
-                    skipStart = false;
+                    isBeginTurn = false;
 
                     // If it's not my turn, continue
                     if (!isMyTurn)
@@ -79,13 +79,17 @@ public class Client {
                             }
                         }
                     }
+                    readyToUpdate = false;
+
                     // Check if the player placed a piece or has surrendered
                     if (!hasSurrendered) {
                         // When piece has been placed send update to server
                         toServer.writeUTF("turn/" + Arrays.deepToString(blokus.getBoard().getGrid()));
+                        fromServer.readUTF();
                     } else {
                         // When the player has surrendered update the server
                         toServer.writeUTF("surrender/" + blokus.getPlayer().getScore());
+                        fromServer.readUTF();
                     }
                 }
 
@@ -93,6 +97,19 @@ public class Client {
                 log(ex.toString() + '\n');
             }
         }).start();
+    }
+
+    private void handleStartup(String startupString) {
+        String[] message = splitMessage(startupString);
+        if (!message[0].equals("start"))
+            System.err.println("Not a start command");
+
+        setId(message[1]);
+        checkForTurn(message[2]);
+        if (isMyTurn)
+            isBeginTurn = true;
+        blokus = new Blokus(this);
+        Frame.getInstance().setPanel(PanelType.GAME_PANEL);
     }
 
     private void updateGrid(String gridString) {
@@ -110,24 +127,7 @@ public class Client {
             }
         }
         blokus.getBoard().setGrid(newGrid);
-        Frame.getInstance().getGamePanel().repaint();
-    }
-
-    private void handleStartup(String startupString) {
-        String[] message = splitMessage(startupString);
-        if (!message[0].equals("start"))
-            System.err.println("Not a start command");
-
-        setId(message[1]);
-        checkForTurn(message[2]);
-        if (isMyTurn)
-            skipStart = true;
-        blokus = new Blokus(this);
-        Frame.getInstance().setPanel(PanelType.GAME_PANEL);
-
-        // test
-        setReadyToUpdate(false);
-
+        Frame.getInstance().getGamePanel().getGameRenderPanel().repaint();
     }
 
     private String[] splitMessage(String message) {
