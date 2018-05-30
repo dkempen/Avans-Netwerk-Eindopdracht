@@ -7,6 +7,7 @@ import gui.PanelType;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 public class JoinGamePanel extends JPanel implements Panel {
     @Override
@@ -17,6 +18,11 @@ public class JoinGamePanel extends JPanel implements Panel {
 
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void handleMouseWheel(MouseWheelEvent mouseWheelEvent) {
 
     }
 

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 public class MenuPanel extends JPanel implements gui.Panel {
 
@@ -37,6 +38,11 @@ public class MenuPanel extends JPanel implements gui.Panel {
 
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void handleMouseWheel(MouseWheelEvent mouseWheelEvent) {
 
     }
 

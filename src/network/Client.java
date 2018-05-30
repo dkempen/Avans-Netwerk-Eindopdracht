@@ -2,6 +2,7 @@ package network;
 
 import game.Blokus;
 import game.BlokusBoard;
+import game.State;
 import gui.Frame;
 import gui.PanelType;
 
@@ -85,14 +86,11 @@ public class Client {
                     if (!hasSurrendered) {
                         // When piece has been placed send update to server
                         toServer.writeUTF("turn/" + Arrays.deepToString(blokus.getBoard().getGrid()));
-                        fromServer.readUTF();
                     } else {
                         // When the player has surrendered update the server
                         toServer.writeUTF("surrender/" + blokus.getPlayer().getScore());
-                        fromServer.readUTF();
                     }
                 }
-
             } catch (IOException ex) {
                 log(ex.toString() + '\n');
             }
@@ -105,10 +103,10 @@ public class Client {
             System.err.println("Not a start command");
 
         setId(message[1]);
+        blokus = new Blokus(this);
         checkForTurn(message[2]);
         if (isMyTurn)
             isBeginTurn = true;
-        blokus = new Blokus(this);
         Frame.getInstance().setPanel(PanelType.GAME_PANEL);
     }
 
@@ -141,6 +139,11 @@ public class Client {
     private void checkForTurn(String message) {
         int turnId = Integer.parseInt(message.replaceAll(".*=", ""));
         isMyTurn = turnId == id;
+
+        if (isMyTurn)
+            blokus.setState(State.TURN);
+        else
+            blokus.setState(State.WAIT);
     }
 
     // Call when player ended his turn

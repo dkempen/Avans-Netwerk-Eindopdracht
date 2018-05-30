@@ -2,12 +2,12 @@ package game;
 
 import gui.Frame;
 import gui.panels.GamePanel;
-import gui.panels.GameRenderPanel;
 import network.Client;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 public class Blokus {
 
@@ -18,6 +18,8 @@ public class Blokus {
     private GamePanel gamePanel;
     private Point selected;
     private int selectedPieceIndex;
+
+    private State currentState;
 
     public Blokus(Client client) {
         this.client = client;
@@ -31,9 +33,6 @@ public class Blokus {
         board = new BlokusBoard();
         player = new BlokusPlayer(client.getId());
         initGUI();
-        if (client.isMyTurn()) {
-
-        }
     }
 
     private void initGUI() {
@@ -49,31 +48,26 @@ public class Blokus {
         Frame.getInstance().getGamePanel().getGameRenderPanel().repaint();
     }
 
-    public void startNewTurn() {
-        // Edit piecesPanel
-        JPanel piecesPanel = gamePanel.getPiecesPanel();
+    public void setState(State state) {
+        currentState = state;
     }
 
-    public boolean isGameOver() {
-        return false;
-    }
-
-    public void gameOver() {
-
-    }
-
-    public void rotateClockwise() {
+    private void rotateClockwise() {
         player.getPieces().get(selectedPieceIndex).rotateClockwise();
         board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
         repaint();
     }
 
-    public void rotateCounterClockwise() {
-
+    private void rotateCounterClockwise() {
+        player.getPieces().get(selectedPieceIndex).rotateCounterClockwise();
+        board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
+        repaint();
     }
 
-    public void flip() {
-
+    private void flip() {
+        player.getPieces().get(selectedPieceIndex).flipOver();
+        board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
+        repaint();
     }
 
     private Point getPointOnBoard(Point point) {
@@ -90,21 +84,45 @@ public class Blokus {
         }
     }
 
-    public void handleMouseClick() {
-        System.out.println("click");
-        try {
-            board.placePiece(player.getPieces().get(selectedPieceIndex),
-                    selected.x - BlokusPiece.SHAPE_SIZE / 2,
-                    selected.y - BlokusPiece.SHAPE_SIZE / 2,
-                    player.isFirstMove());
-            player.getPieces().remove(selectedPieceIndex);
-            player.setFirstMove(false);
-            player.setCanPlay(player.getPieces().size() != 0);
-            startNewTurn();
-            repaint();
-            Client.getInstance().setReadyToUpdate(false);
-        } catch (BlokusBoard.IllegalMoveException ex) {
-            System.out.println((ex.getMessage()));
+    public void handleMouseWheel(MouseWheelEvent e) {
+        if (e.getWheelRotation() > 0)
+            rotateClockwise();
+        else
+            rotateCounterClockwise();
+    }
+
+    public void handleMouseClick(MouseEvent e) {
+        switch (e.getButton()) {
+            case MouseEvent.BUTTON1: // Left mouse button: place piece
+                // If it's not the players turn
+                if (currentState != State.TURN)
+                    return;
+                try {
+                    board.placePiece(player.getPieces().get(selectedPieceIndex),
+                            selected.x - BlokusPiece.SHAPE_SIZE / 2,
+                            selected.y - BlokusPiece.SHAPE_SIZE / 2,
+                            player.isFirstMove());
+                    player.getPieces().remove(selectedPieceIndex);
+                    player.setFirstMove(false);
+                    repaint();
+                    Client.getInstance().setReadyToUpdate(false);
+                } catch (BlokusBoard.IllegalMoveException ex) {
+                    System.out.println((ex.getMessage()));
+                }
+
+                checkIfFinished();
+                break;
+            case MouseEvent.BUTTON3: // Right mouse button: flip piece
+                flip();
+                break;
+        }
+    }
+
+    private void checkIfFinished() {
+        // if the player still has pieces left, then he hasn't won
+        if (player.getPieces().size() == 0) {
+            setState(State.DONE);
+            Client.getInstance().setReadyToUpdate(true);
         }
     }
 

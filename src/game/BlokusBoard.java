@@ -1,7 +1,9 @@
 package game;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class BlokusBoard {
 
@@ -16,16 +18,17 @@ public class BlokusBoard {
     public static final Color BOARD_COLOR = Color.LIGHT_GRAY;
     public static final Color GRID_LINE_COLOR = Color.GRAY;
 
+    private BufferedImage boardSprite;
     private BufferedImage redSprite;
     private BufferedImage blueSprite;
     private BufferedImage yellowSprite;
     private BufferedImage greenSprite;
 
-    public static final String OFF_BOARD_ERROR = "Piece must be placed entirely on the board.";
-    public static final String ADJACENCY_ERROR = "Pieces of the same color cannot share edges with one another.";
-    public static final String OVERLAP_ERROR = "Pieces cannot overlap.";
-    public static final String START_ERROR = "Starting peice must occupy the player's respective corner.";
-    public static final String CORNER_ERROR = "Pieces must be connected to at least one other piece of the the same color by the corner.";
+    private static final String OFF_BOARD_ERROR = "Piece must be placed entirely on the board.";
+    private static final String ADJACENCY_ERROR = "Pieces of the same color cannot share edges with one another.";
+    private static final String OVERLAP_ERROR = "Pieces cannot overlap.";
+    private static final String START_ERROR = "Starting peice must occupy the player's respective corner.";
+    private static final String CORNER_ERROR = "Pieces must be connected to at least one other piece of the the same color by the corner.";
 
     private int[][] grid;
     private int[][] overlay;
@@ -45,13 +48,8 @@ public class BlokusBoard {
 
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
-                // Draw a sprite if possible, else drawBoard background
-                if (!drawSprite(grid, x, y, cellSize, g2d)) {
-                    g2d.setColor(BOARD_COLOR);
-                    g2d.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    g2d.setColor(GRID_LINE_COLOR);
-                    g2d.drawRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                }
+                // Draw a sprite
+                drawSprite(grid, x, y, cellSize, g2d);
 
                 // if there is a piece on the overlay
                 if (overlay[x][y] != NONE) {
@@ -105,23 +103,29 @@ public class BlokusBoard {
     }
 
     private void initSprites() {
-        redSprite = createBufferedImage(Color.RED);
-        blueSprite = createBufferedImage(Color.BLUE);
-        yellowSprite = createBufferedImage(Color.YELLOW);
-        greenSprite = createBufferedImage(Color.GREEN);
+        try {
+            boardSprite = resize(ImageIO.read(getClass().getResource("/boardSprite.jpg")));
+            redSprite = resize(ImageIO.read(getClass().getResource("/redSprite.jpg")));
+            blueSprite = resize(ImageIO.read(getClass().getResource("/blueSprite.jpg")));
+            yellowSprite = resize(ImageIO.read(getClass().getResource("/yellowSprite.jpg")));
+            greenSprite = resize(ImageIO.read(getClass().getResource("/greenSprite.jpg")));
+        } catch (IOException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
-    private BufferedImage createBufferedImage(Color color) {
-        int cellSize = DEFAULT_RESOLUTION / BOARD_SIZE;
-        BufferedImage b_img = new BufferedImage(cellSize, cellSize, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D graphics = b_img.createGraphics();
-        graphics.setPaint(color);
-        graphics.fillRect(0, 0, b_img.getWidth(), b_img.getHeight());
-        return b_img;
+    private BufferedImage resize(BufferedImage img) {
+        int size = DEFAULT_RESOLUTION / BOARD_SIZE;
+        Image tmp = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
-    private boolean drawSprite(int[][] grid, int x, int y, int cellSize, Graphics2D g2d) {
-        BufferedImage sprite;
+    private void drawSprite(int[][] grid, int x, int y, int cellSize, Graphics2D g2d) {
+        BufferedImage sprite = boardSprite;
         switch (grid[x][y]) {
             case BLUE:
                 sprite = blueSprite;
@@ -135,11 +139,11 @@ public class BlokusBoard {
             case GREEN:
                 sprite = greenSprite;
                 break;
-            default:
-                return false;
+            case NONE:
+                sprite = boardSprite;
+                break;
         }
         g2d.drawImage(sprite, x * cellSize + 1, y * cellSize + 1, null);
-        return true;
     }
 
     public static Color getColor(int color) {

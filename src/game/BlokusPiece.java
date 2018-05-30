@@ -16,7 +16,7 @@ public class BlokusPiece {
     private int color;
 
     // Constructor of BlokusPiece
-    public BlokusPiece(int[][] shape, int color) {
+    BlokusPiece(int[][] shape, int color) {
         // Check if the shape of the piece is 7 x 7
         if (shape.length != SHAPE_SIZE || shape[0].length != SHAPE_SIZE){
             throw new IllegalArgumentException("The array of the shape needs to be 7 x 7");

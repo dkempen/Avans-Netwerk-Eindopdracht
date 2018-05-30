@@ -91,6 +91,14 @@ public class Frame extends JFrame {
             }
         });
 
+        addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                super.mouseWheelMoved(e);
+                currentPanel.handleMouseWheel(e);
+            }
+        });
+
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
