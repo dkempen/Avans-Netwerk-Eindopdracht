@@ -53,7 +53,7 @@ public class Server {
                     log("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                     log("Client " + clientNo + "'s IP Address is " + inetAddress.getHostAddress());
 
-                    if (clientNo >= 2) {
+                    if (clientNo >= 3) {
                         startGame();
                         return;
                     }
@@ -74,24 +74,23 @@ public class Server {
         // Server waits for a response when a turn is made and loops for the entire game
         while (true) {
             try {
-                String message = gameLogic.getCurrent().input().readUTF();
+                String message = gameLogic.getCurrentPlayer().input().readUTF();
                 switch (splitMessage(message)[0]) {
                     case "turn":
+                        // TODO: set score with every update
                         gameLogic.setNewGrid(splitMessage(message)[1]);
                         gameLogic.nextTurn();
                         gameLogic.sendUpdate();
                         break;
                     case "surrender":
-                        gameLogic.getCurrent().surrender(Integer.parseInt(splitMessage(message)[1]));
+                        gameLogic.getCurrentPlayer().surrender();
                         // check if the game has ended when all of the player have surrendered
-                        if (!gameLogic.checkForEnd()) {
-                            gameLogic.nextTurn();
-                            gameLogic.sendUpdate();
-                        } else {
-                            gameLogic.sendEndUpdate();
+                        if (gameLogic.handleSurrender(false))
                             return;
-                        }
-                        break;
+                    case "shutdown":
+                        // When the user closes the program, commence shutdown sequence
+                        if (gameLogic.handleSurrender(true))
+                            return;
                     default:
                         System.out.println("Message isn't recognized");
                 }

@@ -1,6 +1,7 @@
 package gui;
 
 import gui.panels.*;
+import network.Client;
 import network.Server;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class Frame extends JFrame {
 
     private Frame() {
         super("Blokus");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(1000, 800));
         setResizable(false);
         setLocationRelativeTo(null);
@@ -75,6 +76,16 @@ public class Frame extends JFrame {
     }
 
     private void addListeners() {
+        // Shutdown procedure
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                if (Client.getInstance().isActive())
+                    Client.getInstance().shutdown();
+                dispose();
+                System.exit(0);
+            }
+        });
+
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

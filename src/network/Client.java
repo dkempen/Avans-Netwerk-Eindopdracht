@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class Client {
 
     private static Client instance = null;
+    private boolean isActive = false;
 
     // IO streams
     private DataOutputStream toServer;
@@ -40,6 +41,7 @@ public class Client {
     }
 
     public void start(int port) {
+        isActive = true;
         new Thread(() -> {
             try {
                 // Create a socket to connect to the server
@@ -60,6 +62,7 @@ public class Client {
                 while (true) {
                     if (!isBeginTurn) {
                         String updateString = fromServer.readUTF();
+                        //TODO: Check for end
                         String[] update = splitMessage(updateString);
                         updateGrid(update[1]);
                         checkForTurn(update[0]);
@@ -155,6 +158,15 @@ public class Client {
         }
     }
 
+    public void shutdown() {
+        // When the user closes the program, commence shutdown sequence
+        try {
+            toServer.writeUTF("shutdown/" + blokus.getPlayer().getScore());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void log(String message) {
         Frame.getInstance().handleClientLog(message);
     }
@@ -174,5 +186,9 @@ public class Client {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }

@@ -41,12 +41,15 @@ public class Player {
         return surrendered;
     }
 
-    public void surrender(int score) {
+    public void surrender() {
         surrendered = true;
-        this.score = score;
     }
 
     public int getScore() {
         return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

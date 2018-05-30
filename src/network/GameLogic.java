@@ -11,7 +11,7 @@ class GameLogic {
 
     private Server server;
     private ArrayList<Player> players;
-    private Player current;
+    private Player currentPlayer;
 
     private int[][] grid;
 
@@ -32,22 +32,41 @@ class GameLogic {
             }
         }
 
-        // Make player 1 current turn
-        current = players.get(0);
+        // Make player 1 currentPlayer turn
+        currentPlayer = players.get(0);
     }
 
     public void sendUpdate() {
-        String message = "turn=" + current.getId() + "/" + Arrays.deepToString(grid);
+        String message = "turn=" + currentPlayer.getId() + "/" + Arrays.deepToString(grid);
         for (Player player : players) {
             try {
                 player.output().writeUTF(message);
             } catch (IOException e) {
-                e.printStackTrace();
+                // When the user has closed the program, commence shutdown sequence
+                handleSurrender(true);
             }
         }
     }
 
-    public void sendEndUpdate() {
+    public boolean handleSurrender(boolean hasShutdown) {
+        int index = players.indexOf(currentPlayer);
+        currentPlayer.surrender();
+        if (hasShutdown)
+            players.remove(currentPlayer);
+        if (!checkForEnd()) {
+            if (hasShutdown)
+                nextTurnOnShutdown(index);
+            else
+                nextTurn();
+            sendUpdate();
+        } else {
+            sendEndUpdate();
+            return true;
+        }
+        return false;
+    }
+
+    private void sendEndUpdate() {
         String message = "end/" + getScores() + "/winner=" + getWinnerId();
         for (Player player : players) {
             try {
@@ -75,20 +94,30 @@ class GameLogic {
         grid = newGrid;
     }
 
-    public boolean checkForEnd() {
+    private boolean checkForEnd() {
         for (Player player : players)
             if (!player.hasSurrendered())
                 return false;
         return true;
     }
 
+    private void nextTurnOnShutdown(int index) {
+        while (true) {
+            if (index >= players.size())
+                index = 0;
+            currentPlayer = players.get(index);
+            if (!currentPlayer.hasSurrendered())
+                return;
+        }
+    }
+
     public void nextTurn() {
         while (true) {
-            int currentIndex = players.indexOf(current);
+            int currentIndex = players.indexOf(currentPlayer);
             if (currentIndex >= players.size() - 1)
                 currentIndex = -1;
-            current = players.get(currentIndex + 1);
-            if (!current.hasSurrendered())
+            currentPlayer = players.get(currentIndex + 1);
+            if (!currentPlayer.hasSurrendered())
                 return;
         }
     }
@@ -97,8 +126,8 @@ class GameLogic {
         return players;
     }
 
-    public Player getCurrent() {
-        return current;
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     private String getScores() {
