@@ -108,6 +108,7 @@ public class Blokus {
                             selected.y - BlokusPiece.SHAPE_SIZE / 2,
                             player.isFirstMove());
                     player.getPieces().remove(selectedPieceIndex);
+                    gamePanel.getPiecesPanel().remove(getSelectedPieceIndex());
                     player.setFirstMove(false);
                     isValidPlacement = true;
                     repaint();
@@ -151,5 +152,13 @@ public class Blokus {
 
     public BlokusPlayer getPlayer() {
         return player;
+    }
+
+    public void setSelectedPieceIndex(int selectedPieceIndex) {
+        this.selectedPieceIndex = selectedPieceIndex;
+    }
+
+    public int getSelectedPieceIndex(){
+        return selectedPieceIndex;
     }
 }
