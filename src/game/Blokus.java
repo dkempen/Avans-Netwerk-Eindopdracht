@@ -1,10 +1,9 @@
 package game;
 
 import gui.Frame;
-import gui.panels.GamePanel;
+import gui.panels.game.GamePanel;
 import network.Client;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -18,6 +17,7 @@ public class Blokus {
     private GamePanel gamePanel;
     private Point selected;
     private int selectedPieceIndex;
+    private boolean isValidPlacement;
 
     private State currentState;
 
@@ -41,7 +41,7 @@ public class Blokus {
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(board.draw(), 0, 0, null);
+        g2d.drawImage(board.draw(isValidPlacement), 0, 0, null);
     }
 
     private void repaint() {
@@ -50,6 +50,9 @@ public class Blokus {
 
     public void setState(State state) {
         currentState = state;
+        Frame.getInstance().getGamePanel().getInfoPanel().updateValues(
+                client.getCurrentTurn(), player.getScore(), player.getPieces().size()
+        );
     }
 
     private void rotateClockwise() {
@@ -80,6 +83,7 @@ public class Blokus {
         if (!p.equals(selected)) {
             selected = p;
             board.overlay(player.getPieces().get(selectedPieceIndex), selected.x, selected.y);
+            checkIfPieceIsValid();
             repaint();
         }
     }
@@ -89,6 +93,7 @@ public class Blokus {
             rotateClockwise();
         else
             rotateCounterClockwise();
+        checkIfPieceIsValid();
     }
 
     public void handleMouseClick(MouseEvent e) {
@@ -104,9 +109,11 @@ public class Blokus {
                             player.isFirstMove());
                     player.getPieces().remove(selectedPieceIndex);
                     player.setFirstMove(false);
+                    isValidPlacement = true;
                     repaint();
                     Client.getInstance().setReadyToUpdate(false);
                 } catch (BlokusBoard.IllegalMoveException ex) {
+                    isValidPlacement = false;
                     System.out.println((ex.getMessage()));
                 }
 
@@ -115,6 +122,18 @@ public class Blokus {
             case MouseEvent.BUTTON3: // Right mouse button: flip piece
                 flip();
                 break;
+        }
+    }
+
+    private void checkIfPieceIsValid() {
+        try {
+            board.isValidMove(player.getPieces().get(selectedPieceIndex),
+                    selected.x - BlokusPiece.SHAPE_SIZE / 2,
+                    selected.y - BlokusPiece.SHAPE_SIZE / 2,
+                    player.isFirstMove());
+            isValidPlacement = true;
+        } catch (BlokusBoard.IllegalMoveException e) {
+            isValidPlacement = false;
         }
     }
 

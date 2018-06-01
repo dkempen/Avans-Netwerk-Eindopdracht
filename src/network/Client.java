@@ -30,6 +30,7 @@ public class Client {
     private boolean readyToUpdate;
     private boolean hasSurrendered;
     private boolean isBeginTurn;
+    private int currentTurn;
 
     private Client() {
     }
@@ -141,6 +142,7 @@ public class Client {
 
     private void checkForTurn(String message) {
         int turnId = Integer.parseInt(message.replaceAll(".*=", ""));
+        currentTurn = turnId;
         isMyTurn = turnId == id;
 
         if (isMyTurn)
@@ -190,5 +192,9 @@ public class Client {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public int getCurrentTurn() {
+        return currentTurn;
     }
 }

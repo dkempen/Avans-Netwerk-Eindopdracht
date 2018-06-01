@@ -1,4 +1,4 @@
-package gui.panels;
+package gui.panels.game;
 
 import game.Blokus;
 import game.BlokusPiece;
@@ -16,6 +16,7 @@ public class GamePanel extends JPanel implements gui.Panel {
     private Blokus blokus;
     private JPanel piecesPanel;
     private GameRenderPanel gameRenderPanel;
+    private GameInfoPanel infoPanel;
 
     public GamePanel() {
         setLayout(new FlowLayout());
@@ -25,13 +26,15 @@ public class GamePanel extends JPanel implements gui.Panel {
 
     public void init(Blokus blokus) {
         this.blokus = blokus;
-        gameRenderPanel = new GameRenderPanel(this);
         setLayout(new BorderLayout());
 
+        gameRenderPanel = new GameRenderPanel(this);
+        infoPanel = new GameInfoPanel();
         JScrollPane jScrollPane = initScrollPane();
 
         add(jScrollPane, BorderLayout.WEST);
         add(gameRenderPanel, BorderLayout.CENTER);
+        add(infoPanel, BorderLayout.SOUTH);
     }
 
     private JScrollPane initScrollPane() {
@@ -71,6 +74,10 @@ public class GamePanel extends JPanel implements gui.Panel {
 
     public GameRenderPanel getGameRenderPanel() {
         return gameRenderPanel;
+    }
+
+    public GameInfoPanel getInfoPanel() {
+        return infoPanel;
     }
 
     public Blokus getBlokus() {

@@ -17,6 +17,7 @@ public class BlokusBoard {
 
     public static final Color BOARD_COLOR = Color.LIGHT_GRAY;
     public static final Color GRID_LINE_COLOR = Color.GRAY;
+    public static final float ALPHA = 0.5f;
 
     private BufferedImage boardSprite;
     private BufferedImage redSprite;
@@ -40,11 +41,12 @@ public class BlokusBoard {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public BufferedImage draw() {
+    public BufferedImage draw(boolean isValidPlacement) {
         int size = DEFAULT_RESOLUTION;
         BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
         int cellSize = size / (BOARD_SIZE);
         Graphics2D g2d = (Graphics2D) image.getGraphics();
+        Composite originalComposite = g2d.getComposite();
 
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
@@ -53,7 +55,10 @@ public class BlokusBoard {
 
                 // if there is a piece on the overlay
                 if (overlay[x][y] != NONE) {
+                    if (!isValidPlacement)
+                        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ALPHA));
                     drawSprite(overlay, x, y, cellSize, g2d);
+                    g2d.setComposite(originalComposite);
                 }
 
                 // if it's empty and a corner, draw a dot
@@ -204,7 +209,7 @@ public class BlokusBoard {
         return null;
     }
 
-    private boolean isValidMove(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) throws IllegalMoveException {
+    boolean isValidMove(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) throws IllegalMoveException {
         boolean corner = false;
         for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++) {
             for (int y = 0; y < BlokusPiece.SHAPE_SIZE; y++) {

@@ -1,6 +1,7 @@
 package gui;
 
 import gui.panels.*;
+import gui.panels.game.GamePanel;
 import network.Client;
 import network.Server;
 

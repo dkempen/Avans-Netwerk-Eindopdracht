@@ -20,7 +20,15 @@ public class BlokusPlayer {
             pieces.add(new BlokusPiece(shape, id));
     }
 
+    private void calculateScore() {
+        int score = 0;
+        for (BlokusPiece piece : pieces)
+            score += piece.getPoints();
+        this.score = score;
+    }
+
     public int getScore() {
+        calculateScore();
         return score;
     }
 
