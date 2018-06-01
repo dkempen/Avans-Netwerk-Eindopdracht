@@ -18,6 +18,7 @@ public class Frame extends JFrame {
     private HostGamePanel hostGamePanel = new HostGamePanel();
     private JoinGamePanel joinGamePanel = new JoinGamePanel();
     private LobbyPanel lobbyPanel = new LobbyPanel();
+    private EndPanel endPanel = new EndPanel();
     private Panel currentPanel;
 
     public static Frame getInstance() {
@@ -58,6 +59,9 @@ public class Frame extends JFrame {
                 else
                     lobbyPanel.initClient();
                 setPanel(lobbyPanel);
+                break;
+            case END_PANEL:
+                setPanel(endPanel);
                 break;
             default: // Psych! That's the wrong panel!
                 System.out.println("Panel doesn't exist!");

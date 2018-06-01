@@ -51,7 +51,7 @@ public class Blokus {
     public void setState(State state) {
         currentState = state;
         Frame.getInstance().getGamePanel().getInfoPanel().updateValues(
-                client.getCurrentTurn(), player.getScore(), player.getPieces().size()
+                client.getCurrentTurn(), client.isMyTurn(), player.getScore(), player.getPieces().size()
         );
     }
 
@@ -79,6 +79,8 @@ public class Blokus {
     }
 
     public void handleMouseMove(MouseEvent e) {
+        if (currentState == State.DONE)
+            return;
         Point p = getPointOnBoard(e.getPoint());
         if (!p.equals(selected)) {
             selected = p;
@@ -89,6 +91,8 @@ public class Blokus {
     }
 
     public void handleMouseWheel(MouseWheelEvent e) {
+        if (currentState == State.DONE)
+            return;
         if (e.getWheelRotation() > 0)
             rotateClockwise();
         else
@@ -97,6 +101,8 @@ public class Blokus {
     }
 
     public void handleMouseClick(MouseEvent e) {
+        if (currentState == State.DONE)
+            return;
         switch (e.getButton()) {
             case MouseEvent.BUTTON1: // Left mouse button: place piece
                 // If it's not the players turn
@@ -152,6 +158,10 @@ public class Blokus {
 
     public BlokusPlayer getPlayer() {
         return player;
+    }
+
+    public State getState() {
+        return currentState;
     }
 
     public void setSelectedPieceIndex(int selectedPieceIndex) {

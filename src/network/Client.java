@@ -32,6 +32,11 @@ public class Client {
     private boolean isBeginTurn;
     private int currentTurn;
 
+    // End game
+    private int[] scores;
+    private int winnerId;
+    private boolean hasWon;
+
     private Client() {
     }
 
@@ -56,17 +61,23 @@ public class Client {
                 toServer = new DataOutputStream(socket.getOutputStream());
 
                 // Waiting for start command
-                String startupString = fromServer.readUTF();
-                handleStartup(startupString);
+                String startString = fromServer.readUTF();
+                handleStart(startString);
 
                 //noinspection InfiniteLoopStatement
                 while (true) {
                     if (!isBeginTurn) {
                         String updateString = fromServer.readUTF();
-                        //TODO: Check for end
                         String[] update = splitMessage(updateString);
-                        updateGrid(update[1]);
-                        checkForTurn(update[0]);
+                        switch (getTopic(update[0])) {
+                            case "turn":
+                                updateGrid(update[1]);
+                                checkForTurn(update[0]);
+                                break;
+                            case "end":
+                                handleEnd(update);
+                                break;
+                        }
                     }
                     isBeginTurn = false;
 
@@ -89,7 +100,8 @@ public class Client {
                     // Check if the player placed a piece or has surrendered
                     if (!hasSurrendered) {
                         // When piece has been placed send update to server
-                        toServer.writeUTF("turn/" + Arrays.deepToString(blokus.getBoard().getGrid()));
+                        toServer.writeUTF("turn/" + Arrays.deepToString(blokus.getBoard().getGrid())
+                                + "/" + blokus.getPlayer().getScore());
                     } else {
                         // When the player has surrendered update the server
                         toServer.writeUTF("surrender/" + blokus.getPlayer().getScore());
@@ -101,17 +113,24 @@ public class Client {
         }).start();
     }
 
-    private void handleStartup(String startupString) {
+    private void handleStart(String startupString) {
         String[] message = splitMessage(startupString);
         if (!message[0].equals("start"))
             System.err.println("Not a start command");
 
-        setId(message[1]);
+        id = Integer.parseInt(getValueFromString(message[1]));
         blokus = new Blokus(this);
         checkForTurn(message[2]);
         if (isMyTurn)
             isBeginTurn = true;
         Frame.getInstance().setPanel(PanelType.GAME_PANEL);
+    }
+
+    private void handleEnd(String[] endString) {
+        setWinner(getValueFromString(endString[1]));
+        setScores(getValueFromString(endString[2]));
+        blokus.setState(State.DONE);
+        Frame.getInstance().setPanel(PanelType.END_PANEL);
     }
 
     private void updateGrid(String gridString) {
@@ -136,22 +155,40 @@ public class Client {
         return message.split("/");
     }
 
-    private void setId(String message) {
-        id = Integer.parseInt(message.replaceAll(".*=", ""));
+    private String getValueFromString(String string) {
+        return string.replaceAll(".*=", "");
+    }
+
+    private String getTopic(String string) {
+        return string.split("=")[0];
     }
 
     private void checkForTurn(String message) {
-        int turnId = Integer.parseInt(message.replaceAll(".*=", ""));
+        int turnId = Integer.parseInt(getValueFromString(message));
         currentTurn = turnId;
         isMyTurn = turnId == id;
 
+        if (blokus.getState() == State.DONE)
+            return;
         if (isMyTurn)
             blokus.setState(State.TURN);
         else
             blokus.setState(State.WAIT);
     }
 
-    // Call when player ended his turn
+    private void setWinner(String winnerString) {
+        int winnerId = Integer.parseInt(winnerString);
+        this.winnerId = winnerId;
+        this.hasWon = winnerId == id;
+    }
+    private void setScores(String scores) {
+        this.scores = new int[] {-1, -1, -1, -1};
+        Scanner scanner = new Scanner(scores).useDelimiter("[^\\d]+");
+        int index = 0;
+        while (scanner.hasNext())
+            this.scores[index] = scanner.nextInt();
+    }
+
     public void setReadyToUpdate(boolean hasSurrendered) {
         synchronized (this) {
             readyToUpdate = true;
@@ -196,5 +233,17 @@ public class Client {
 
     public int getCurrentTurn() {
         return currentTurn;
+    }
+
+    public int[] getScores() {
+        return scores;
+    }
+
+    public int getWinnerId() {
+        return winnerId;
+    }
+
+    public boolean hasWon() {
+        return hasWon;
     }
 }

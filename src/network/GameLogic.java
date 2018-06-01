@@ -48,6 +48,17 @@ class GameLogic {
         }
     }
 
+    private void sendEndUpdate() {
+        String message = "end/winner=" + getWinnerId() + "/scores=" + getScores();
+        for (Player player : players) {
+            try {
+                player.output().writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public boolean handleSurrender(boolean hasShutdown) {
         int index = players.indexOf(currentPlayer);
         currentPlayer.surrender();
@@ -64,17 +75,6 @@ class GameLogic {
             return true;
         }
         return false;
-    }
-
-    private void sendEndUpdate() {
-        String message = "end/" + getScores() + "/winner=" + getWinnerId();
-        for (Player player : players) {
-            try {
-                player.output().writeUTF(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void setNewGrid(String gridString) {
@@ -148,5 +148,9 @@ class GameLogic {
             }
         }
         return id;
+    }
+
+    public void setScore(String score) {
+        currentPlayer.setScore(Integer.parseInt(score));
     }
 }

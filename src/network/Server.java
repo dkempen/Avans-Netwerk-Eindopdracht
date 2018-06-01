@@ -75,22 +75,26 @@ public class Server {
         while (true) {
             try {
                 String message = gameLogic.getCurrentPlayer().input().readUTF();
-                switch (splitMessage(message)[0]) {
+                String[] splitMessage = splitMessage(message);
+                switch (splitMessage[0]) {
                     case "turn":
-                        // TODO: set score with every update
-                        gameLogic.setNewGrid(splitMessage(message)[1]);
+                        gameLogic.setNewGrid(splitMessage[1]);
+                        gameLogic.setScore(splitMessage[2]);
                         gameLogic.nextTurn();
                         gameLogic.sendUpdate();
                         break;
                     case "surrender":
+                        gameLogic.setScore(splitMessage[1]);
                         gameLogic.getCurrentPlayer().surrender();
                         // check if the game has ended when all of the player have surrendered
                         if (gameLogic.handleSurrender(false))
                             return;
+                        break;
                     case "shutdown":
                         // When the user closes the program, commence shutdown sequence
                         if (gameLogic.handleSurrender(true))
                             return;
+                        break;
                     default:
                         System.out.println("Message isn't recognized");
                 }
