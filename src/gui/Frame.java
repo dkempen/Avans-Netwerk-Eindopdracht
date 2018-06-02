@@ -181,7 +181,7 @@ public class Frame extends JFrame {
 
     public Rectangle2D addButton(Graphics2D g2d, String text, int size, int x, int y, boolean centered, boolean selected) {
         // Add text
-        int padding = 20;
+        int padding = 5;
         this.font = this.font.deriveFont((float) size);
         GlyphVector itemFontVector = font.createGlyphVector(g2d.getFontRenderContext(), text);
         AffineTransform item = new AffineTransform();
@@ -216,8 +216,8 @@ public class Frame extends JFrame {
         return rectangle;
     }
 
-    public static Point getPoint(Point point) {
-        return new Point(point.x - 3, point.y - 27);
+    public static Point getPoint(Point point, Component component) {
+        return SwingUtilities.convertPoint(Frame.getInstance(), point, component);
     }
 
     public EndPanel getEndPanel() {

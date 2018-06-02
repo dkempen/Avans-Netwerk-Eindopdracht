@@ -51,8 +51,9 @@ public class Blokus {
     public void setState(State state) {
         currentState = state;
         Frame.getInstance().getGamePanel().getInfoPanel().updateValues(
-                client.getCurrentTurn(), client.isMyTurn(), player.getScore(), player.getPieces().size()
-        );
+                client.getCurrentTurn(), client.isMyTurn(), player.getScore(), player.getPieces().size());
+        if (state == State.DONE)
+            board.clear(board.getOverlay());
     }
 
     private void rotateClockwise() {
@@ -152,6 +153,13 @@ public class Blokus {
             setState(State.DONE);
             Client.getInstance().setReadyToUpdate(true);
         }
+    }
+
+    public void surrender() {
+        if (currentState != State.TURN)
+            return;
+        setState(State.DONE);
+        Client.getInstance().setReadyToUpdate(true);
     }
 
     public BlokusBoard getBoard() {

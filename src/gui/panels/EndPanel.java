@@ -67,7 +67,7 @@ public class EndPanel extends JPanel implements Panel {
 
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
-        Point relativePoint = Frame.getPoint(mouseEvent.getPoint());
+        Point relativePoint = Frame.getPoint(mouseEvent.getPoint(), this);
         if (backButton.contains(relativePoint))
             Frame.getInstance().setPanel(PanelType.MENU_PANEL);
     }

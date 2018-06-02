@@ -73,6 +73,7 @@ public class Client {
                             case "turn":
                                 updateGrid(update[1]);
                                 checkForTurn(update[0]);
+                                updateInfoPanel();
                                 break;
                             case "end":
                                 handleEnd(update);
@@ -142,6 +143,11 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateInfoPanel() {
+        Frame.getInstance().getGamePanel().getInfoPanel().updateValues(
+                getCurrentTurn(), isMyTurn(), blokus.getPlayer().getScore(), blokus.getPlayer().getPieces().size());
     }
 
     private void updateGrid(String gridString) {

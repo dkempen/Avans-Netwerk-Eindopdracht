@@ -15,9 +15,6 @@ public class GameRenderPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
-        g2d.drawString("GamePanel", 10, 20);
-
         gamePanel.getBlokus().draw(g2d);
     }
 }

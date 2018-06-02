@@ -1,6 +1,7 @@
 package gui.panels.game;
 
 import game.Blokus;
+import game.BlokusBoard;
 import game.BlokusPiece;
 import gui.Frame;
 import gui.PanelType;
@@ -8,6 +9,7 @@ import gui.PanelType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 
 public class GamePanel extends JPanel implements gui.Panel {
 
@@ -16,6 +18,8 @@ public class GamePanel extends JPanel implements gui.Panel {
     private GameRenderPanel gameRenderPanel;
     private GameInfoPanel infoPanel;
     private int pieceIndex;
+
+    private Rectangle2D surrenderButton;
 
     public GamePanel() {
         setLayout(new FlowLayout());
@@ -28,7 +32,7 @@ public class GamePanel extends JPanel implements gui.Panel {
         setLayout(new BorderLayout());
 
         gameRenderPanel = new GameRenderPanel(this);
-        infoPanel = new GameInfoPanel();
+        infoPanel = new GameInfoPanel(this);
         JScrollPane jScrollPane = initScrollPane();
 
         add(jScrollPane, BorderLayout.WEST);
@@ -103,6 +107,9 @@ public class GamePanel extends JPanel implements gui.Panel {
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
         blokus.handleMouseClick(mouseEvent);
+        Point relativePoint = Frame.getPoint(mouseEvent.getPoint(), infoPanel);
+        if (surrenderButton.contains(relativePoint))
+            blokus.surrender();
     }
 
     @Override
@@ -127,6 +134,9 @@ public class GamePanel extends JPanel implements gui.Panel {
         return blokus;
     }
 
+    public void setSurrenderButton(Rectangle2D surrenderButton) {
+        this.surrenderButton = surrenderButton;
+    }
 
     public static class BlokusPieceLabel extends JLabel {
         private int pieceIndex;

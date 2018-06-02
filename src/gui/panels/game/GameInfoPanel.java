@@ -1,18 +1,21 @@
 package gui.panels.game;
 
 import game.BlokusBoard;
+import gui.Frame;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameInfoPanel extends JPanel {
 
+    private GamePanel gamePanel;
     private String turn;
     private int score;
     private int piecesLeft;
 
-    GameInfoPanel() {
-        setPreferredSize(new Dimension(400, 55));
+    GameInfoPanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+        setPreferredSize(new Dimension(Frame.WIDTH, Frame.HEIGHT - BlokusBoard.DEFAULT_RESOLUTION - 30));
     }
 
     public void updateValues(int turn, boolean myTurn, int score, int piecesLeft) {
@@ -26,10 +29,11 @@ public class GameInfoPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
-        g2d.drawString(turn, 10, 10);
-        g2d.drawString("Score: " + score, 10, 30);
-        g2d.drawString("Pieces left:  " + piecesLeft, 10, 50);
+        Frame frame = Frame.getInstance();
+        frame.addText(g2d, turn, 30, 20, 50, false);
+        frame.addText(g2d, "Score: " + score, 30, 300, 50, false);
+        frame.addText(g2d, "Pieces left: " + piecesLeft, 30, 450, 50, false);
+        gamePanel.setSurrenderButton(frame.addButton(g2d, "Surrender", 30, 700, 45, false, false));
     }
 
     private String getTurnString(int id, boolean myTurn) {
