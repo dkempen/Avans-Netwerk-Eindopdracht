@@ -130,8 +130,18 @@ public class Client {
         setWinner(getValueFromString(endString[1]));
         setScores(getValueFromString(endString[2]));
         blokus.setState(State.DONE);
+        closeClient();
         Frame.getInstance().getEndPanel().updateInfo();
         Frame.getInstance().setPanel(PanelType.END_PANEL);
+    }
+
+    private void closeClient() {
+        try {
+            toServer.close();
+            fromServer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateGrid(String gridString) {

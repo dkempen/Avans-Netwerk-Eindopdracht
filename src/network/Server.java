@@ -12,6 +12,7 @@ public class Server {
     private boolean isActive = false;
 
     private GameLogic gameLogic;
+    private ServerSocket serverSocket;
 
     private Server() {}
 
@@ -28,7 +29,7 @@ public class Server {
         new Thread(() -> {
             try {
                 // Create a server socket
-                ServerSocket serverSocket = new ServerSocket(port);
+                serverSocket = new ServerSocket(port);
 
                 log("Server started at " + new Date());
 
@@ -55,6 +56,7 @@ public class Server {
 
                     if (clientNo >= 3) {
                         startGame();
+                        gameLogic.closeServer();
                         return;
                     }
 
@@ -114,5 +116,9 @@ public class Server {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
     }
 }

@@ -74,8 +74,8 @@ public class Blokus {
     }
 
     private Point getPointOnBoard(Point point) {
-        return new Point((point.x - 123) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE),
-                (point.y - 32) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE));
+        return new Point((point.x - 123 - 7 - 15) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE),
+                (point.y - 32 + 5) / (BlokusBoard.DEFAULT_RESOLUTION / BlokusBoard.BOARD_SIZE));
     }
 
     public void handleMouseMove(MouseEvent e) {
@@ -114,7 +114,9 @@ public class Blokus {
                             selected.y - BlokusPiece.SHAPE_SIZE / 2,
                             player.isFirstMove());
                     player.getPieces().remove(selectedPieceIndex);
-                    gamePanel.getPiecesPanel().remove(getSelectedPieceIndex());
+                    if (selectedPieceIndex >= player.getPieces().size())
+                        selectedPieceIndex = player.getPieces().size() - 1;
+                    gamePanel.updatePiecePanel();
                     player.setFirstMove(false);
                     isValidPlacement = true;
                     repaint();

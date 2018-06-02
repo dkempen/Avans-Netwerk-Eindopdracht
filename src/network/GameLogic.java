@@ -59,6 +59,16 @@ class GameLogic {
         }
     }
 
+    public void closeServer() {
+        for (Player player : players)
+            player.close();
+        try {
+            server.getServerSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean handleSurrender(boolean hasShutdown) {
         int index = players.indexOf(currentPlayer);
         currentPlayer.surrender();

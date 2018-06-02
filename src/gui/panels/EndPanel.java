@@ -3,6 +3,7 @@ package gui.panels;
 import game.BlokusBoard;
 import gui.Frame;
 import gui.Panel;
+import gui.PanelType;
 import network.Client;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.Arrays;
+import java.awt.geom.Rectangle2D;
 
 public class EndPanel extends JPanel implements Panel {
 
@@ -18,6 +19,7 @@ public class EndPanel extends JPanel implements Panel {
     private boolean hasWon;
     private int winnerId;
     private int[] scores;
+    private Rectangle2D backButton;
 
     public EndPanel() {
     }
@@ -35,7 +37,6 @@ public class EndPanel extends JPanel implements Panel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.BLACK);
-        g2d.drawString("EndPanel", 10, 20);
         String hasWonString;
         if (hasWon)
             hasWonString = "You have won!";
@@ -43,6 +44,8 @@ public class EndPanel extends JPanel implements Panel {
             hasWonString = "Player " + BlokusBoard.getColorById(winnerId) + " has won!";
         frame.addText(g2d, hasWonString, 50, Frame.WIDTH / 2, 100, true);
         drawScores(g2d);
+
+        backButton = Frame.getInstance().addButton(g2d, "Back to menu", 30, 20, 40, false, false);
     }
 
     private void drawScores(Graphics2D g2d) {
@@ -58,12 +61,15 @@ public class EndPanel extends JPanel implements Panel {
 
     @Override
     public void handleKeys(KeyEvent keyEvent) {
-
+        if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE)
+            Frame.getInstance().setPanel(PanelType.MENU_PANEL);
     }
 
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
-
+        Point relativePoint = Frame.getPoint(mouseEvent.getPoint());
+        if (backButton.contains(relativePoint))
+            Frame.getInstance().setPanel(PanelType.MENU_PANEL);
     }
 
     @Override

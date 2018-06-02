@@ -25,6 +25,15 @@ public class Player {
         }
     }
 
+    public void close() {
+        try {
+            dataInputStream.close();
+            dataOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public DataInputStream input() {
         return dataInputStream;
     }

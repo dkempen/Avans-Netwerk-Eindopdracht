@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
@@ -176,6 +177,47 @@ public class Frame extends JFrame {
         g2d.fill(shadowShape);
         g2d.setColor(Color.GRAY);
         g2d.fill(itemShape);
+    }
+
+    public Rectangle2D addButton(Graphics2D g2d, String text, int size, int x, int y, boolean centered, boolean selected) {
+        // Add text
+        int padding = 20;
+        this.font = this.font.deriveFont((float) size);
+        GlyphVector itemFontVector = font.createGlyphVector(g2d.getFontRenderContext(), text);
+        AffineTransform item = new AffineTransform();
+        Shape itemShape = itemFontVector.getOutline();
+        if (centered)
+            x -= itemShape.getBounds2D().getCenterX();
+        item.translate(x + padding, y + padding);
+        itemShape = item.createTransformedShape(itemShape);
+
+        // Add shadow
+        Shape shadowShape = itemShape;
+        AffineTransform shadow = new AffineTransform();
+        shadow.translate(2, -2);
+        shadowShape = shadow.createTransformedShape(shadowShape);
+
+        // Add box
+        Rectangle2D bounds = itemShape.getBounds2D();
+        Rectangle2D rectangle = new Rectangle2D.Double(bounds.getMinX() - padding, bounds.getMinY() - padding,
+                bounds.getWidth() + padding * 2, bounds.getHeight() + padding * 2);
+        if (selected)
+            g2d.setColor(Color.LIGHT_GRAY);
+        else
+            g2d.setColor(Color.GRAY);
+
+        // Draw
+        g2d.fill(rectangle);
+        g2d.setColor(Color.GRAY);
+        g2d.fill(shadowShape);
+        g2d.setColor(Color.WHITE);
+        g2d.fill(itemShape);
+
+        return rectangle;
+    }
+
+    public static Point getPoint(Point point) {
+        return new Point(point.x - 3, point.y - 27);
     }
 
     public EndPanel getEndPanel() {
