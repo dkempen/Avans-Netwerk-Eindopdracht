@@ -1,5 +1,7 @@
 package gui.panels.game;
 
+import game.BlokusBoard;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -31,16 +33,11 @@ public class GameInfoPanel extends JPanel {
     }
 
     private String getTurnString(int id, boolean myTurn) {
-        String string = "";
+        String string;
         if (myTurn)
             string = "your";
         else
-            switch (id) {
-                case 1: string = "blue's"; break;
-                case 2: string = "red's"; break;
-                case 3: string = "yellow's"; break;
-                case 4: string = "green's"; break;
-            }
+            string = BlokusBoard.getColorById(id) + "'s";
         return "It's " + string + " turn";
     }
 }

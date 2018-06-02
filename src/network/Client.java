@@ -130,6 +130,7 @@ public class Client {
         setWinner(getValueFromString(endString[1]));
         setScores(getValueFromString(endString[2]));
         blokus.setState(State.DONE);
+        Frame.getInstance().getEndPanel().updateInfo();
         Frame.getInstance().setPanel(PanelType.END_PANEL);
     }
 
@@ -185,8 +186,10 @@ public class Client {
         this.scores = new int[] {-1, -1, -1, -1};
         Scanner scanner = new Scanner(scores).useDelimiter("[^\\d]+");
         int index = 0;
-        while (scanner.hasNext())
+        while (scanner.hasNext()) {
             this.scores[index] = scanner.nextInt();
+            index++;
+        }
     }
 
     public void setReadyToUpdate(boolean hasSurrendered) {

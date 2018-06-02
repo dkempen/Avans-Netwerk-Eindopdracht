@@ -8,6 +8,10 @@ import network.Server;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 
 public class Frame extends JFrame {
 
@@ -21,6 +25,11 @@ public class Frame extends JFrame {
     private EndPanel endPanel = new EndPanel();
     private Panel currentPanel;
 
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 800;
+
+    private Font font;
+
     public static Frame getInstance() {
         if (instance == null)
             instance = new Frame();
@@ -30,11 +39,12 @@ public class Frame extends JFrame {
     private Frame() {
         super("Blokus");
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setMinimumSize(new Dimension(1000, 800));
+        setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setResizable(false);
         setLocationRelativeTo(null);
         addListeners();
 
+        setFont();
         setPanel(PanelType.MENU_PANEL);
         setVisible(true);
     }
@@ -74,6 +84,16 @@ public class Frame extends JFrame {
         setContentPane((JPanel) panel);
         revalidate();
         repaint();
+    }
+
+    private void setFont() {
+        try (InputStream in = getClass().getResourceAsStream("/font.ttf")) {
+            InputStream bufferedIn = new BufferedInputStream(in);
+            this.font = Font.createFont(Font.PLAIN, bufferedIn);
+            this.font = this.font.deriveFont(Font.PLAIN, 80);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public GamePanel getGamePanel() {
@@ -131,5 +151,34 @@ public class Frame extends JFrame {
     public void handleClientLog(String log) {
         if (!Server.getInstance().isActive())
             lobbyPanel.setjTextArea(log);
+    }
+
+    public void addText(Graphics2D g2d, String text, int size, int x, int y, boolean centered) {
+        // Add text
+        this.font = this.font.deriveFont((float) size);
+        GlyphVector itemFontVector = font.createGlyphVector(g2d.getFontRenderContext(), text);
+        AffineTransform item = new AffineTransform();
+        Shape itemShape = itemFontVector.getOutline();
+        if (centered)
+            x -= itemShape.getBounds2D().getCenterX();
+        item.translate(x, y);
+        itemShape = item.createTransformedShape(itemShape);
+        g2d.setColor(Color.WHITE);
+
+        // Add shadow
+        Shape shadowShape = itemShape;
+        AffineTransform shadow = new AffineTransform();
+        shadow.translate(2, -2);
+        shadowShape = shadow.createTransformedShape(shadowShape);
+
+        // Draw
+        g2d.setColor(Color.BLACK);
+        g2d.fill(shadowShape);
+        g2d.setColor(Color.GRAY);
+        g2d.fill(itemShape);
+    }
+
+    public EndPanel getEndPanel() {
+        return endPanel;
     }
 }

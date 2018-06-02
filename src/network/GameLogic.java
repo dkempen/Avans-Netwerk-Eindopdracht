@@ -134,16 +134,15 @@ class GameLogic {
         StringBuilder scores = new StringBuilder("[");
         for (Player player : players)
             scores.append(player.getScore()).append(", ");
-        scores.append("]");
-        return scores.toString();
+        return scores.append("]").toString();
     }
 
     private int getWinnerId() {
         int id = 0;
-        int highScore = -1;
+        int lowestScore = 100;
         for (Player player : players) {
-            if (player.getScore() > highScore) {
-                highScore = player.getScore();
+            if (player.getScore() < lowestScore) {
+                lowestScore = player.getScore();
                 id = player.getId();
             }
         }

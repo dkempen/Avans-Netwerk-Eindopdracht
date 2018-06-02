@@ -19,6 +19,7 @@ public class MenuPanel extends JPanel implements gui.Panel {
         g2d.drawString("MenuPanel", 10, 20);
         g2d.drawString("1 = Host Game", 10, 40);
         g2d.drawString("2 = Join Game", 10, 60);
+        Frame.getInstance().addText(g2d, "MenuPanel", 100, Frame.WIDTH / 2, 500, true);
     }
 
     @Override

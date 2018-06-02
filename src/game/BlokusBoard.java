@@ -167,6 +167,17 @@ public class BlokusBoard {
         }
     }
 
+    public static String getColorById(int id) {
+        String string = "";
+        switch (id) {
+            case 1: string = "blue"; break;
+            case 2: string = "red"; break;
+            case 3: string = "yellow"; break;
+            case 4: string = "green"; break;
+        }
+        return string;
+    }
+
     public int[][] getGrid() {
         return grid;
     }
