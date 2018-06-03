@@ -1,7 +1,6 @@
 package gui.panels.game;
 
 import game.Blokus;
-import game.BlokusBoard;
 import game.BlokusPiece;
 import gui.Frame;
 import gui.PanelType;
@@ -16,10 +15,8 @@ public class GamePanel extends JPanel implements gui.Panel {
     private Blokus blokus;
     private JPanel piecesPanel;
     private GameRenderPanel gameRenderPanel;
-    private GameInfoPanel infoPanel;
+    private GameInfoPanel gameInfoPanel;
     private int pieceIndex;
-
-    private Rectangle2D surrenderButton;
 
     public GamePanel() {
         setLayout(new FlowLayout());
@@ -32,12 +29,12 @@ public class GamePanel extends JPanel implements gui.Panel {
         setLayout(new BorderLayout());
 
         gameRenderPanel = new GameRenderPanel(this);
-        infoPanel = new GameInfoPanel(this);
+        gameInfoPanel = new GameInfoPanel(this);
         JScrollPane jScrollPane = initScrollPane();
 
         add(jScrollPane, BorderLayout.WEST);
         add(gameRenderPanel, BorderLayout.CENTER);
-        add(infoPanel, BorderLayout.SOUTH);
+        add(gameInfoPanel, BorderLayout.SOUTH);
     }
 
     private JScrollPane initScrollPane() {
@@ -107,9 +104,7 @@ public class GamePanel extends JPanel implements gui.Panel {
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
         blokus.handleMouseClick(mouseEvent);
-        Point relativePoint = Frame.getPoint(mouseEvent.getPoint(), infoPanel);
-        if (surrenderButton.contains(relativePoint))
-            blokus.surrender();
+        gameInfoPanel.handleMouseClick(mouseEvent);
     }
 
     @Override
@@ -120,22 +115,19 @@ public class GamePanel extends JPanel implements gui.Panel {
     @Override
     public void handleMouseMove(MouseEvent mouseEvent) {
         blokus.handleMouseMove(mouseEvent);
+        gameInfoPanel.handleMouseMove(mouseEvent);
     }
 
     public GameRenderPanel getGameRenderPanel() {
         return gameRenderPanel;
     }
 
-    public GameInfoPanel getInfoPanel() {
-        return infoPanel;
+    public GameInfoPanel getGameInfoPanel() {
+        return gameInfoPanel;
     }
 
     public Blokus getBlokus() {
         return blokus;
-    }
-
-    public void setSurrenderButton(Rectangle2D surrenderButton) {
-        this.surrenderButton = surrenderButton;
     }
 
     public static class BlokusPieceLabel extends JLabel {

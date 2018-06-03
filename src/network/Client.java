@@ -146,7 +146,7 @@ public class Client {
     }
 
     private void updateInfoPanel() {
-        Frame.getInstance().getGamePanel().getInfoPanel().updateValues(
+        Frame.getInstance().getGamePanel().getGameInfoPanel().updateValues(
                 getCurrentTurn(), isMyTurn(), blokus.getPlayer().getScore(), blokus.getPlayer().getPieces().size());
     }
 

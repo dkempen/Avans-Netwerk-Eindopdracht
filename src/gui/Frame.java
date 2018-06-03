@@ -19,15 +19,17 @@ public class Frame extends JFrame {
     private static Frame instance = null;
 
     private MenuPanel menuPanel = new MenuPanel();
-    private GamePanel gamePanel = new GamePanel();
+    private RulesPanel rulesPanel = new RulesPanel();
     private HostGamePanel hostGamePanel = new HostGamePanel();
     private JoinGamePanel joinGamePanel = new JoinGamePanel();
     private LobbyPanel lobbyPanel = new LobbyPanel();
+    private GamePanel gamePanel = new GamePanel();
     private EndPanel endPanel = new EndPanel();
     private Panel currentPanel;
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 800;
+    public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
 
     private Font font;
 
@@ -55,8 +57,8 @@ public class Frame extends JFrame {
             case MENU_PANEL:
                 setPanel(menuPanel);
                 break;
-            case GAME_PANEL:
-                setPanel(gamePanel);
+            case RULES_PANEL:
+                setPanel(rulesPanel);
                 break;
             case HOST_GAME_PANEL:
                 setPanel(hostGamePanel);
@@ -65,11 +67,14 @@ public class Frame extends JFrame {
                 setPanel(joinGamePanel);
                 break;
             case LOBBY_PANEL:
-                if (currentPanel instanceof HostGamePanel) // If it came from host, then host a game
+                if (menuPanel.isHostPressed()) // If it came from host, then host a game
                     lobbyPanel.initHost();
                 else
                     lobbyPanel.initClient();
                 setPanel(lobbyPanel);
+                break;
+            case GAME_PANEL:
+                setPanel(gamePanel);
                 break;
             case END_PANEL:
                 setPanel(endPanel);
@@ -95,10 +100,6 @@ public class Frame extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public GamePanel getGamePanel() {
-        return gamePanel;
     }
 
     private void addListeners() {
@@ -181,7 +182,7 @@ public class Frame extends JFrame {
 
     public Rectangle2D addButton(Graphics2D g2d, String text, int size, int x, int y, boolean centered, boolean selected) {
         // Add text
-        int padding = 5;
+        int padding = size / 6;
         this.font = this.font.deriveFont((float) size);
         GlyphVector itemFontVector = font.createGlyphVector(g2d.getFontRenderContext(), text);
         AffineTransform item = new AffineTransform();
@@ -214,6 +215,10 @@ public class Frame extends JFrame {
         g2d.fill(itemShape);
 
         return rectangle;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     public static Point getPoint(Point point, Component component) {
