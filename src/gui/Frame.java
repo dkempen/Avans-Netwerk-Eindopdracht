@@ -31,10 +31,10 @@ public class Frame extends JFrame {
     public static final int HEIGHT = 800;
 
     public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
-    public static final Color TEXT_COLOR = Color.DARK_GRAY;
-    public static final Color SHADOW_COLOR = Color.DARK_GRAY;
-    public static final Color BUTTON_COLOR = Color.DARK_GRAY;
-    public static final Color BUTTON_HIGHLIGHT_COLOR = Color.DARK_GRAY;
+    public static final Color TEXT_COLOR = Color.WHITE;
+    public static final Color SHADOW_COLOR = Color.BLACK;
+    public static final Color BUTTON_COLOR = Color.GRAY;
+    public static final Color BUTTON_HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
 
     private Font font;
 

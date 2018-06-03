@@ -49,7 +49,7 @@ public class LobbyPanel extends JPanel implements Panel {
         startButtonSelected= false;
 
         Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
-        if (startbutton.contains(relative))
+        if (startbutton != null && startbutton.contains(relative))
             startButtonSelected = true;
 
         repaint();
