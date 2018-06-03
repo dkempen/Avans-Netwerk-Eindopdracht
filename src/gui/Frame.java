@@ -30,11 +30,11 @@ public class Frame extends JFrame {
     public static final int WIDTH = 850;
     public static final int HEIGHT = 850;
 
-    public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
+    public static final Color BACKGROUND_COLOR = new Color(158, 160, 168);
     public static final Color TEXT_COLOR = Color.WHITE;
-    public static final Color SHADOW_COLOR = Color.BLACK;
+    public static final Color SHADOW_COLOR = Color.DARK_GRAY;
     public static final Color BUTTON_COLOR = Color.GRAY;
-    public static final Color BUTTON_HIGHLIGHT_COLOR = Color.LIGHT_GRAY;
+    public static final Color BUTTON_HIGHLIGHT_COLOR = new Color(180, 180, 180);
 
     private Font font;
 
@@ -184,9 +184,9 @@ public class Frame extends JFrame {
         shadowShape = shadow.createTransformedShape(shadowShape);
 
         // Draw
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(SHADOW_COLOR);
         g2d.fill(shadowShape);
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(TEXT_COLOR);
         g2d.fill(itemShape);
     }
 
