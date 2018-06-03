@@ -18,11 +18,13 @@ public class GameInfoPanel extends JPanel {
 
     private Rectangle2D surrenderButton;
     private boolean surrenderButtonSelected;
+    private String surrenderButtonText;
 
     GameInfoPanel(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         setPreferredSize(new Dimension(Frame.WIDTH, Frame.HEIGHT - BlokusBoard.DEFAULT_RESOLUTION - 30));
         setBackground(Frame.BACKGROUND_COLOR);
+        surrenderButtonText = "Surrender";
     }
 
     public void updateValues(int turn, boolean myTurn, int score, int piecesLeft) {
@@ -38,7 +40,7 @@ public class GameInfoPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         Frame frame = Frame.getInstance();
         frame.addText(g2d, turn, 40, 20, 50, false);
-        surrenderButton = (frame.addButton(g2d, "Surrender", 40, 20, 100, false, surrenderButtonSelected));
+        surrenderButton = (frame.addButton(g2d, surrenderButtonText, 40, 20, 100, false, surrenderButtonSelected));
         frame.addText(g2d, "Score: " + score, 40, 600, 50, false);
         frame.addText(g2d, "Pieces left: " + piecesLeft, 40, 600, 100, false);
     }
@@ -65,6 +67,7 @@ public class GameInfoPanel extends JPanel {
         Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
         if (surrenderButton.contains(relative)) {
             gamePanel.getBlokus().surrender();
+            surrenderButtonText = "You have surrendered";
         }
     }
 }

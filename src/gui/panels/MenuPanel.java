@@ -27,14 +27,13 @@ public class MenuPanel extends JPanel implements gui.Panel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        Frame.getInstance().addText(g2d, "Blokus!", 200, Frame.WIDTH / 2, 180, true);
         hostButton = Frame.getInstance().addButton(g2d, "Host Game", 100,
                 Frame.WIDTH / 2, Frame.HEIGHT / 2 + -100, true, hostButtonSelected);
         joinButton = Frame.getInstance().addButton(g2d, "Join Game", 100,
                 Frame.WIDTH / 2, Frame.HEIGHT / 2 + 100, true, joinButtonSelected);
         rulesButton = Frame.getInstance().addButton(g2d, "Rules", 100,
                 Frame.WIDTH / 2, Frame.HEIGHT / 2 + 300, true, rulesButtonSelected);
-
-        Frame.getInstance().addText(g2d,"Blokus!", 200,Frame.WIDTH/2 + 20,150,true);
     }
 
     @Override

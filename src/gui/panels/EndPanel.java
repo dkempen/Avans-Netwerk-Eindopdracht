@@ -22,6 +22,10 @@ public class EndPanel extends JPanel implements Panel {
     private Rectangle2D backButton;
     private boolean backButtonSelected;
 
+    public EndPanel() {
+        setBackground(Frame.BACKGROUND_COLOR);
+    }
+
     public void updateInfo() {
         frame = Frame.getInstance();
         Client client = Client.getInstance();
@@ -40,14 +44,14 @@ public class EndPanel extends JPanel implements Panel {
             hasWonString = "You have won!";
         else
             hasWonString = "Player " + BlokusBoard.getColorById(winnerId) + " has won!";
-        frame.addText(g2d, hasWonString, 50, Frame.WIDTH / 2, 100, true);
+        frame.addText(g2d, hasWonString, 50, Frame.WIDTH / 2, 250, true);
         drawScores(g2d);
 
-        backButton = Frame.getInstance().addButton(g2d, "Back to menu", 30, 20, 40, false, backButtonSelected);
+        backButton = Frame.getInstance().addButton(g2d, "Back to menu", 50, 20, 50, false, backButtonSelected);
     }
 
     private void drawScores(Graphics2D g2d) {
-        int y = 300;
+        int y = 400;
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == -1)
                 continue;
