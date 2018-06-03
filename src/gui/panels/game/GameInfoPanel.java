@@ -37,10 +37,10 @@ public class GameInfoPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         Frame frame = Frame.getInstance();
-        frame.addText(g2d, turn, 30, 20, 50, false);
-        frame.addText(g2d, "Score: " + score, 30, 300, 50, false);
-        frame.addText(g2d, "Pieces left: " + piecesLeft, 30, 450, 50, false);
-        surrenderButton = (frame.addButton(g2d, "Surrender", 30, 700, 45, false, surrenderButtonSelected));
+        frame.addText(g2d, turn, 40, 20, 50, false);
+        surrenderButton = (frame.addButton(g2d, "Surrender", 40, 20, 100, false, surrenderButtonSelected));
+        frame.addText(g2d, "Score: " + score, 40, 600, 50, false);
+        frame.addText(g2d, "Pieces left: " + piecesLeft, 40, 600, 100, false);
     }
 
     private String getTurnString(int id, boolean myTurn) {
