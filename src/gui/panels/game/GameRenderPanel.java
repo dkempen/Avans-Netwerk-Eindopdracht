@@ -1,5 +1,7 @@
 package gui.panels.game;
 
+import gui.Frame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,6 +11,7 @@ public class GameRenderPanel extends JPanel {
 
     GameRenderPanel(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        setBackground(Frame.BACKGROUND_COLOR);
     }
 
     @Override

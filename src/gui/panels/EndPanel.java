@@ -20,9 +20,7 @@ public class EndPanel extends JPanel implements Panel {
     private int winnerId;
     private int[] scores;
     private Rectangle2D backButton;
-
-    public EndPanel() {
-    }
+    private boolean backButtonSelected;
 
     public void updateInfo() {
         frame = Frame.getInstance();
@@ -45,7 +43,7 @@ public class EndPanel extends JPanel implements Panel {
         frame.addText(g2d, hasWonString, 50, Frame.WIDTH / 2, 100, true);
         drawScores(g2d);
 
-        backButton = Frame.getInstance().addButton(g2d, "Back to menu", 30, 20, 40, false, false);
+        backButton = Frame.getInstance().addButton(g2d, "Back to menu", 30, 20, 40, false, backButtonSelected);
     }
 
     private void drawScores(Graphics2D g2d) {
@@ -79,6 +77,11 @@ public class EndPanel extends JPanel implements Panel {
 
     @Override
     public void handleMouseMove(MouseEvent mouseEvent) {
+        backButtonSelected = false;
 
+        Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
+        if (backButton.contains(relative))
+            backButtonSelected = true;
+        repaint();
     }
 }

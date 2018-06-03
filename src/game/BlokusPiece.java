@@ -1,5 +1,7 @@
 package game;
 
+import gui.Frame;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -86,7 +88,7 @@ public class BlokusPiece {
         int cellSize = size / (SHAPE_SIZE);
         Graphics2D g2d = (Graphics2D) image.getGraphics();
 
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(Frame.BACKGROUND_COLOR);
         g2d.fillRect(0,0,size,size);
 
         for (int x = 0; x < SHAPE_SIZE; x++){

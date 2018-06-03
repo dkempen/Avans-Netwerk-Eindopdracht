@@ -66,6 +66,8 @@ public class Client {
 
                 //noinspection InfiniteLoopStatement
                 while (true) {
+                    if (!isActive)
+                        return;
                     if (!isBeginTurn) {
                         String updateString = fromServer.readUTF();
                         String[] update = splitMessage(updateString);
@@ -142,6 +144,7 @@ public class Client {
         try {
             toServer.close();
             fromServer.close();
+            isActive = false;
         } catch (IOException e) {
             e.printStackTrace();
         }

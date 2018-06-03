@@ -22,6 +22,7 @@ public class GameInfoPanel extends JPanel {
     GameInfoPanel(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         setPreferredSize(new Dimension(Frame.WIDTH, Frame.HEIGHT - BlokusBoard.DEFAULT_RESOLUTION - 30));
+        setBackground(Frame.BACKGROUND_COLOR);
     }
 
     public void updateValues(int turn, boolean myTurn, int score, int piecesLeft) {

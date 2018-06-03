@@ -40,8 +40,9 @@ public class GamePanel extends JPanel implements gui.Panel {
     private JScrollPane initScrollPane() {
         piecesPanel = new JPanel();
         piecesPanel.setLayout(new BoxLayout(piecesPanel, BoxLayout.Y_AXIS));
+        piecesPanel.setBackground(Frame.BACKGROUND_COLOR);
         JScrollPane jScrollPane = new JScrollPane(piecesPanel);
-        jScrollPane.setPreferredSize(new Dimension(BlokusPiece.DEFAULT_RESOLUTION + 7 + 15, BlokusPiece.DEFAULT_RESOLUTION));
+        jScrollPane.setPreferredSize(new Dimension(BlokusPiece.DEFAULT_RESOLUTION + 23, BlokusPiece.DEFAULT_RESOLUTION));
         jScrollPane.getVerticalScrollBar().setUnitIncrement(BlokusPiece.DEFAULT_RESOLUTION / 3);
 
         JPanel sidePanel = new JPanel();

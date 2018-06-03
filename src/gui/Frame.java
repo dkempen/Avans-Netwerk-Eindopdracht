@@ -27,8 +27,8 @@ public class Frame extends JFrame {
     private EndPanel endPanel = new EndPanel();
     private Panel currentPanel;
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 800;
+    public static final int WIDTH = 850;
+    public static final int HEIGHT = 850;
 
     public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final Color TEXT_COLOR = Color.WHITE;
@@ -46,6 +46,11 @@ public class Frame extends JFrame {
 
     private Frame() {
         super("Blokus");
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setResizable(false);
