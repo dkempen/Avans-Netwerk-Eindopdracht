@@ -52,13 +52,13 @@ public class HostGamePanel extends JPanel implements Panel {
         Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
         if (twoPlayers.contains(relative)) {
             Server.getInstance().setNumberOfClients(2);
-            gui.Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
+            Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
         } else if (threePlayers.contains(relative)) {
             Server.getInstance().setNumberOfClients(3);
             Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
         } else if (fourPlayers.contains(relative)) {
             Server.getInstance().setNumberOfClients(4);
-            Frame.getInstance().setPanel(PanelType.RULES_PANEL);
+            Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
         }
     }
 
