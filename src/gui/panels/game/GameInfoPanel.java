@@ -55,7 +55,7 @@ public class GameInfoPanel extends JPanel {
         surrenderButtonSelected = false;
 
         Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
-        if (surrenderButton.contains(relative))
+        if (surrenderButton != null && surrenderButton.contains(relative))
             surrenderButtonSelected = true;
         repaint();
     }
