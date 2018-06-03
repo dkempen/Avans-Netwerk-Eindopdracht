@@ -178,7 +178,7 @@ public class Blokus {
         this.selectedPieceIndex = selectedPieceIndex;
     }
 
-    public int getSelectedPieceIndex(){
+    public int getSelectedPieceIndex() {
         return selectedPieceIndex;
     }
 }

@@ -2,6 +2,7 @@ package gui.panels;
 
 import gui.Frame;
 import gui.PanelType;
+import network.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,13 +39,14 @@ public class MenuPanel extends JPanel implements gui.Panel {
 
     @Override
     public void handleKeys(KeyEvent keyEvent) {
+
     }
 
     @Override
     public void handleMouseClick(MouseEvent mouseEvent) {
         Point relative = Frame.getPoint(mouseEvent.getPoint(), this);
         if (hostButton.contains(relative))
-            gui.Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
+            gui.Frame.getInstance().setPanel(PanelType.HOST_GAME_PANEL);
         if (joinButton.contains(relative))
             Frame.getInstance().setPanel(PanelType.LOBBY_PANEL);
         if (rulesButton.contains(relative)) {
@@ -72,9 +74,5 @@ public class MenuPanel extends JPanel implements gui.Panel {
         if (rulesButton.contains(relative))
             rulesButtonSelected = true;
         repaint();
-    }
-
-    public boolean isHostPressed() {
-        return hostButtonSelected;
     }
 }

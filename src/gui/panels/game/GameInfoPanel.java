@@ -2,7 +2,6 @@ package gui.panels.game;
 
 import game.BlokusBoard;
 import gui.Frame;
-import gui.PanelType;
 
 import javax.swing.*;
 import java.awt.*;

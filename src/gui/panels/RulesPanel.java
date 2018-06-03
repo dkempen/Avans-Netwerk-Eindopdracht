@@ -27,18 +27,21 @@ public class RulesPanel extends JPanel implements Panel {
         backButton = gui.Frame.getInstance().addButton(g2d, "Back", 100,
                 20, 100, false, backButtonSelected);
 
-        Frame.getInstance().addText(g2d, "1. Each player chooses a color and places that set of 21 pieces in front of his/her side of the board."
-                , 20,Frame.WIDTH/2,200, true);
-
-        Frame.getInstance().addText(g2d,"The order of play is as follows: blue, yellow, red, and then green",20,Frame.WIDTH/2 - 120,225,true);
-
-        Frame.getInstance().addText(g2d,"2. The first player (blue) places any of his/her pieces in a corner square.",20,Frame.WIDTH/2 - 105 , 255,true);
-
-        Frame.getInstance().addText(g2d,"If you want to place a piece on the board in needs to be alligned with the corner of your pieces",20,Frame.WIDTH/2 + 10,280,true);
-
-        Frame.getInstance().addText(g2d,"3. Play continues as each player lays down one piece during a turn.",20,Frame.WIDTH/2 - 122,305,true);
-
-
+        Frame.getInstance().addText(g2d,
+                "1. Each player chooses a color and places that set of 21 pieces in front of his/her side of the board.",
+                20, Frame.WIDTH / 2, 200, true);
+        Frame.getInstance().addText(g2d,
+                "The order of play is as follows: blue, yellow, red, and then green",
+                20, Frame.WIDTH / 2 - 120, 225, true);
+        Frame.getInstance().addText(g2d,
+                "2. The first player (blue) places any of his/her pieces in a corner square.",
+                20, Frame.WIDTH / 2 - 105, 255, true);
+        Frame.getInstance().addText(g2d,
+                "If you want to place a piece on the board in needs to be alligned with the corner of your pieces",
+                20, Frame.WIDTH / 2 + 10, 280, true);
+        Frame.getInstance().addText(g2d,
+                "3. Play continues as each player lays down one piece during a turn.",
+                20, Frame.WIDTH / 2 - 122, 305, true);
     }
 
     @Override

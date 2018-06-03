@@ -16,7 +16,6 @@ public class BlokusBoard {
     public static final int DEFAULT_RESOLUTION = 700;
 
     public static final Color BOARD_COLOR = Color.LIGHT_GRAY;
-    public static final Color GRID_LINE_COLOR = Color.GRAY;
     public static final float ALPHA = 0.5f;
 
     private BufferedImage boardSprite;
@@ -24,6 +23,11 @@ public class BlokusBoard {
     private BufferedImage blueSprite;
     private BufferedImage yellowSprite;
     private BufferedImage greenSprite;
+
+    private BufferedImage redSpriteLabel;
+    private BufferedImage blueSpriteLabel;
+    private BufferedImage yellowSpriteLabel;
+    private BufferedImage greenSpriteLabel;
 
     private static final String OFF_BOARD_ERROR = "Piece must be placed entirely on the board.";
     private static final String ADJACENCY_ERROR = "Pieces of the same color cannot share edges with one another.";
@@ -109,18 +113,27 @@ public class BlokusBoard {
 
     private void initSprites() {
         try {
-            boardSprite = resize(ImageIO.read(getClass().getResource("/boardSprite.jpg")));
-            redSprite = resize(ImageIO.read(getClass().getResource("/redSprite.jpg")));
-            blueSprite = resize(ImageIO.read(getClass().getResource("/blueSprite.jpg")));
-            yellowSprite = resize(ImageIO.read(getClass().getResource("/yellowSprite.jpg")));
-            greenSprite = resize(ImageIO.read(getClass().getResource("/greenSprite.jpg")));
+            boardSprite = resize(ImageIO.read(getClass().getResource("/boardSprite.jpg")), true);
+            redSprite = resize(ImageIO.read(getClass().getResource("/redSprite.jpg")), true);
+            blueSprite = resize(ImageIO.read(getClass().getResource("/blueSprite.jpg")), true);
+            yellowSprite = resize(ImageIO.read(getClass().getResource("/yellowSprite.jpg")), true);
+            greenSprite = resize(ImageIO.read(getClass().getResource("/greenSprite.jpg")), true);
+
+            redSpriteLabel = resize(redSprite, false);
+            blueSpriteLabel = resize(blueSprite, false);
+            yellowSpriteLabel = resize(yellowSprite, false);
+            greenSpriteLabel = resize(greenSprite, false);
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
 
-    private BufferedImage resize(BufferedImage img) {
-        int size = DEFAULT_RESOLUTION / BOARD_SIZE;
+    private BufferedImage resize(BufferedImage img, boolean fullSize) {
+        int size;
+        if (fullSize)
+            size = DEFAULT_RESOLUTION / BOARD_SIZE;
+        else
+            size = BlokusPiece.DEFAULT_RESOLUTION / BlokusPiece.SHAPE_SIZE;
         Image tmp = img.getScaledInstance(size, size, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = resized.createGraphics();
@@ -151,8 +164,7 @@ public class BlokusBoard {
         g2d.drawImage(sprite, x * cellSize + 1, y * cellSize + 1, null);
     }
 
-    public static Color getColor(int color) {
-
+    private static Color getColor(int color) {
         switch (color) {
             case BLUE:
                 return Color.BLUE;
@@ -170,10 +182,18 @@ public class BlokusBoard {
     public static String getColorById(int id) {
         String string = "";
         switch (id) {
-            case 1: string = "blue"; break;
-            case 2: string = "red"; break;
-            case 3: string = "yellow"; break;
-            case 4: string = "green"; break;
+            case 1:
+                string = "blue";
+                break;
+            case 2:
+                string = "red";
+                break;
+            case 3:
+                string = "yellow";
+                break;
+            case 4:
+                string = "green";
+                break;
         }
         return string;
     }
@@ -188,21 +208,14 @@ public class BlokusBoard {
 
     public void placePiece(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) throws IllegalMoveException {
         isValidMove(bp, xOffset, yOffset, firstMove);
-        for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++) {
-            for (int y = 0; y < BlokusPiece.SHAPE_SIZE; y++) {
-                int value = bp.getValue(x, y);
+        for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++)
+            for (int y = 0; y < BlokusPiece.SHAPE_SIZE; y++)
                 if (bp.getValue(x, y) == BlokusPiece.PIECE)
                     this.grid[x + xOffset][y + yOffset] = bp.getColor();
-            }
-        }
     }
 
     private boolean isInBounds(int x, int y) {
         return (x >= 0 && y >= 0 && x < BOARD_SIZE && y < BOARD_SIZE);
-    }
-
-    private boolean isValidMove(BlokusPiece bp, int xOffset, int yOffset) throws IllegalMoveException {
-        return isValidMove(bp, xOffset, yOffset, false);
     }
 
     private Point getCorner(int color) {
@@ -220,7 +233,7 @@ public class BlokusBoard {
         return null;
     }
 
-    boolean isValidMove(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) throws IllegalMoveException {
+    void isValidMove(BlokusPiece bp, int xOffset, int yOffset, boolean firstMove) throws IllegalMoveException {
         boolean corner = false;
         for (int x = 0; x < BlokusPiece.SHAPE_SIZE; x++) {
             for (int y = 0; y < BlokusPiece.SHAPE_SIZE; y++) {
@@ -250,11 +263,26 @@ public class BlokusBoard {
         }
         if (!corner)
             throw new IllegalMoveException(firstMove ? START_ERROR : CORNER_ERROR);
-        return true;
     }
 
     public int[][] getOverlay() {
         return overlay;
+    }
+
+    public BufferedImage getRedSprite() {
+        return redSpriteLabel;
+    }
+
+    public BufferedImage getBlueSprite() {
+        return blueSpriteLabel;
+    }
+
+    public BufferedImage getYellowSprite() {
+        return yellowSpriteLabel;
+    }
+
+    public BufferedImage getGreenSprite() {
+        return greenSpriteLabel;
     }
 
     class IllegalMoveException extends Exception {

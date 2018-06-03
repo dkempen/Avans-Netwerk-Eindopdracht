@@ -31,10 +31,10 @@ public class Frame extends JFrame {
     public static final int HEIGHT = 850;
 
     public static final Color BACKGROUND_COLOR = new Color(158, 160, 168);
-    public static final Color TEXT_COLOR = Color.WHITE;
-    public static final Color SHADOW_COLOR = Color.DARK_GRAY;
-    public static final Color BUTTON_COLOR = Color.GRAY;
-    public static final Color BUTTON_HIGHLIGHT_COLOR = new Color(180, 180, 180);
+    private static final Color TEXT_COLOR = Color.WHITE;
+    private static final Color SHADOW_COLOR = Color.DARK_GRAY;
+    private static final Color BUTTON_COLOR = Color.GRAY;
+    private static final Color BUTTON_HIGHLIGHT_COLOR = new Color(180, 180, 180);
 
     private Font font;
 
@@ -77,7 +77,7 @@ public class Frame extends JFrame {
                 setPanel(joinGamePanel);
                 break;
             case LOBBY_PANEL:
-                if (menuPanel.isHostPressed()) // If it came from host, then host a game
+                if (currentPanel instanceof HostGamePanel) // If it came from host, then host a game
                     lobbyPanel.initHost();
                 else
                     lobbyPanel.initClient();
@@ -157,12 +157,12 @@ public class Frame extends JFrame {
     }
 
     public void handleServerLog(String log) {
-        lobbyPanel.setjTextArea(log);
+//        lobbyPanel.setjTextArea(log);
     }
 
     public void handleClientLog(String log) {
-        if (!Server.getInstance().isActive())
-            lobbyPanel.setjTextArea(log);
+//        if (!Server.getInstance().isActive())
+//            lobbyPanel.setjTextArea(log);
     }
 
     public void addText(Graphics2D g2d, String text, int size, int x, int y, boolean centered) {

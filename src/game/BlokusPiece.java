@@ -1,6 +1,7 @@
 package game;
 
 import gui.Frame;
+import network.Client;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,30 +20,29 @@ public class BlokusPiece {
     // Constructor of BlokusPiece
     BlokusPiece(int[][] shape, int color) {
         // Check if the shape of the piece is 7 x 7
-        if (shape.length != SHAPE_SIZE || shape[0].length != SHAPE_SIZE){
+        if (shape.length != SHAPE_SIZE || shape[0].length != SHAPE_SIZE)
             throw new IllegalArgumentException("The array of the shape needs to be 7 x 7");
-        }
         // used for object duplication
         grid = shape.clone();
 
         this.color = color;
     }
 
-    public void rotateClockwise(){
+    public void rotateClockwise() {
         //making a grid 7 x 7
         int[][] temp = new int[SHAPE_SIZE][SHAPE_SIZE];
 
         // rotating grid clockwise
         for (int x = 0; x < SHAPE_SIZE; x++)
             for (int y = 0; y < SHAPE_SIZE; y++)
-                temp[SHAPE_SIZE - y- 1][x] = grid[x][y];
+                temp[SHAPE_SIZE - y - 1][x] = grid[x][y];
 
         grid = temp;
     }
 
-    public void rotateCounterClockwise(){
+    public void rotateCounterClockwise() {
         //making a grid 7 x 7
-        int[][] temp = new int [SHAPE_SIZE][SHAPE_SIZE];
+        int[][] temp = new int[SHAPE_SIZE][SHAPE_SIZE];
 
         // rotating grid counterclockwise
         for (int x = 0; x < SHAPE_SIZE; x++)
@@ -52,9 +52,9 @@ public class BlokusPiece {
         grid = temp;
     }
 
-    public void flipOver(){
+    public void flipOver() {
         //making a grid 7 x 7
-        int[][] temp = new int [SHAPE_SIZE][SHAPE_SIZE];
+        int[][] temp = new int[SHAPE_SIZE][SHAPE_SIZE];
 
         // flipping the grid
         for (int x = 0; x < SHAPE_SIZE; x++)
@@ -64,18 +64,18 @@ public class BlokusPiece {
         grid = temp;
     }
 
-    public int getValue(int x, int y){
+    public int getValue(int x, int y) {
         return grid[x][y];
     }
 
-    public int getColor(){
+    public int getColor() {
         return color;
     }
 
-    public int getPoints(){
+    public int getPoints() {
         int points = 0;
-        
-        for(int y = 0; y < SHAPE_SIZE; y++)
+
+        for (int y = 0; y < SHAPE_SIZE; y++)
             for (int x = 0; x < SHAPE_SIZE; x++)
                 if (grid[x][y] == PIECE)
                     points++;
@@ -83,31 +83,45 @@ public class BlokusPiece {
         return points;
     }
 
-    public BufferedImage render(int size){
-        BufferedImage image = new BufferedImage(size,size,BufferedImage.TYPE_INT_RGB);
+    public BufferedImage render(int size) {
+        BlokusBoard board = Frame.getInstance().getGamePanel().getBlokus().getBoard();
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
         int cellSize = size / (SHAPE_SIZE);
         Graphics2D g2d = (Graphics2D) image.getGraphics();
 
         g2d.setColor(Frame.BACKGROUND_COLOR);
-        g2d.fillRect(0,0,size,size);
+        g2d.fillRect(0, 0, size, size);
 
-        for (int x = 0; x < SHAPE_SIZE; x++){
-            for (int y = 0; y < SHAPE_SIZE; y++){
-                if(grid[x][y] == PIECE){
-                    g2d.setColor(BlokusBoard.getColor(color));
-                    g2d.fillRect(x * cellSize, y * cellSize,cellSize,cellSize);
-                    g2d.setColor(Color.BLACK);
-                    g2d.drawRect(x * cellSize, y * cellSize,cellSize,cellSize);
-                }
-            }
-        }
+        for (int x = 0; x < SHAPE_SIZE; x++)
+            for (int y = 0; y < SHAPE_SIZE; y++)
+                if (grid[x][y] == PIECE)
+                    drawSprite(board, x, y, cellSize, g2d);
         return image;
     }
 
-    public String toString(){
+    private void drawSprite(BlokusBoard board, int x, int y, int cellSize, Graphics2D g2d) {
+        BufferedImage sprite = board.getBlueSprite();
+        switch (color) {
+            case BlokusBoard.BLUE:
+                sprite = board.getBlueSprite();
+                break;
+            case BlokusBoard.RED:
+                sprite = board.getRedSprite();
+                break;
+            case BlokusBoard.YELLOW:
+                sprite = board.getYellowSprite();
+                break;
+            case BlokusBoard.GREEN:
+                sprite = board.getGreenSprite();
+                break;
+        }
+        g2d.drawImage(sprite, x * cellSize, y * cellSize, null);
+    }
+
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int y = 0; y < SHAPE_SIZE; y++){
-            for (int x = 0; x < SHAPE_SIZE; x++){
+        for (int y = 0; y < SHAPE_SIZE; y++) {
+            for (int x = 0; x < SHAPE_SIZE; x++) {
                 sb.append(grid[x][y]);
                 sb.append(" ");
             }
@@ -116,11 +130,11 @@ public class BlokusPiece {
         return sb.toString();
     }
 
-    public static int[][][] getAllShapes(){
-        int [][][] shapes = new int [21][SHAPE_SIZE][SHAPE_SIZE];
+    public static int[][][] getAllShapes() {
+        int[][][] shapes = new int[21][SHAPE_SIZE][SHAPE_SIZE];
         int i = 0;
 
-        shapes[i++] = new int[][] {     // * * * * *
+        shapes[i++] = new int[][]{     // * * * * *
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0},
                 {1, 2, 2, 2, 2, 2, 1},
@@ -130,7 +144,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //   * * * *
+        shapes[i++] = new int[][]{     //   * * * *
                 {0, 0, 0, 0, 0, 0, 0},  //   *
                 {0, 1, 2, 1, 0, 0, 0},
                 {0, 2, 3, 2, 2, 2, 1},
@@ -140,7 +154,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      //   * * *
+        shapes[i++] = new int[][]{      //   * * *
                 {0, 0, 1, 2, 1, 0, 0},   // * *
                 {0, 0, 2, 3, 2, 0, 0},
                 {0, 0, 2, 3, 2, 1, 0},
@@ -150,7 +164,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //     *
+        shapes[i++] = new int[][]{     //     *
                 {0, 0, 0, 0, 0, 0, 0},  // * * * *
                 {0, 0, 1, 2, 1, 0, 0},
                 {0, 1, 2, 3, 2, 2, 1},
@@ -160,7 +174,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //     *
+        shapes[i++] = new int[][]{     //     *
                 {0, 0, 0, 0, 0, 0, 0},  // * * *
                 {0, 0, 1, 2, 1, 0, 0},  //   *
                 {0, 1, 2, 3, 2, 1, 0},
@@ -170,7 +184,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //   *
+        shapes[i++] = new int[][]{     //   *
                 {0, 0, 0, 0, 0, 0, 0},  // * * *
                 {0, 0, 1, 2, 1, 0, 0},  //   *
                 {0, 1, 2, 3, 2, 1, 0},
@@ -180,7 +194,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // * * *
+        shapes[i++] = new int[][]{      // * * *
                 {0, 0, 0, 0, 0, 0, 0},   // *   *
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 2, 2, 2, 1, 0},
@@ -190,7 +204,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //   * *
+        shapes[i++] = new int[][]{     //   * *
                 {0, 0, 0, 0, 0, 0, 0},  // * * *
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 2, 2, 2, 1, 0},
@@ -200,7 +214,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //     *
+        shapes[i++] = new int[][]{     //     *
                 {0, 0, 0, 0, 0, 0, 0},  //   * *
                 {0, 0, 0, 1, 2, 1, 0},  // * *
                 {0, 0, 1, 2, 3, 2, 0},
@@ -210,7 +224,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // *
+        shapes[i++] = new int[][]{      // *
                 {0, 0, 0, 0, 0, 0, 0},   // * * *
                 {0, 0, 1, 2, 1, 0, 0},   // *
                 {0, 0, 2, 3, 2, 0, 0},
@@ -220,7 +234,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // *
+        shapes[i++] = new int[][]{      // *
                 {0, 0, 1, 2, 1, 0, 0},   // *
                 {0, 0, 2, 3, 2, 0, 0},   // * * *
                 {0, 0, 2, 3, 2, 2, 1},
@@ -230,7 +244,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // *
+        shapes[i++] = new int[][]{      // *
                 {0, 0, 0, 0, 0, 0, 0},   // * * *
                 {0, 0, 1, 2, 2, 1, 0},   //     *
                 {0, 0, 2, 3, 3, 2, 0},
@@ -241,7 +255,7 @@ public class BlokusPiece {
         };
 
 
-        shapes[i++] = new int[][] {      // * * * *
+        shapes[i++] = new int[][]{      // * * * *
                 {0, 0, 1, 2, 1, 0, 0},   //
                 {0, 0, 2, 3, 2, 0, 0},
                 {0, 0, 2, 3, 2, 0, 0},
@@ -251,7 +265,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // * *
+        shapes[i++] = new int[][]{      // * *
                 {0, 0, 0, 0, 0, 0, 0},   //   * *
                 {0, 0, 1, 2, 2, 1, 0},
                 {0, 1, 2, 3, 3, 2, 0},
@@ -261,7 +275,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // * *
+        shapes[i++] = new int[][]{      // * *
                 {0, 0, 0, 0, 0, 0, 0},   // * *
                 {0, 1, 2, 2, 1, 0, 0},
                 {0, 2, 3, 3, 2, 0, 0},
@@ -271,7 +285,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //   *
+        shapes[i++] = new int[][]{     //   *
                 {0, 0, 0, 0, 0, 0, 0},  // * * *
                 {0, 0, 1, 2, 1, 0, 0},
                 {0, 1, 2, 3, 2, 1, 0},
@@ -281,7 +295,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {     //     *
+        shapes[i++] = new int[][]{     //     *
                 {0, 0, 0, 0, 0, 0, 0},  // * * *
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 2, 2, 2, 2, 0},
@@ -291,7 +305,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      //
+        shapes[i++] = new int[][]{      //
                 {0, 0, 0, 0, 0, 0, 0},   // * * *
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 1, 2, 2, 2, 1, 0},
@@ -301,7 +315,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // *
+        shapes[i++] = new int[][]{      // *
                 {0, 0, 0, 0, 0, 0, 0},   // * *
                 {0, 0, 1, 2, 1, 0, 0},
                 {0, 0, 2, 3, 2, 1, 0},
@@ -311,7 +325,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // * *
+        shapes[i++] = new int[][]{      // * *
                 {0, 0, 0, 0, 0, 0, 0},   //
                 {0, 0, 1, 2, 1, 0, 0},
                 {0, 0, 2, 3, 2, 0, 0},
@@ -321,7 +335,7 @@ public class BlokusPiece {
                 {0, 0, 0, 0, 0, 0, 0}
         };
 
-        shapes[i++] = new int[][] {      // *
+        shapes[i++] = new int[][]{      // *
                 {0, 0, 0, 0, 0, 0, 0},   //
                 {0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 1, 2, 1, 0, 0},

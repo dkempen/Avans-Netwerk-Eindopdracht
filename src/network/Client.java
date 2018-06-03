@@ -203,8 +203,9 @@ public class Client {
         this.winnerId = winnerId;
         this.hasWon = winnerId == id;
     }
+
     private void setScores(String scores) {
-        this.scores = new int[] {-1, -1, -1, -1};
+        this.scores = new int[]{-1, -1, -1, -1};
         Scanner scanner = new Scanner(scores).useDelimiter("[^\\d]+");
         int index = 0;
         while (scanner.hasNext()) {

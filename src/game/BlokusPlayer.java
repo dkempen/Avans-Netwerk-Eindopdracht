@@ -7,11 +7,9 @@ public class BlokusPlayer {
     private LinkedList<BlokusPiece> pieces;
     private int score;
     private boolean firstMove;
-    private boolean isFinished;
 
     BlokusPlayer(int id) {
         firstMove = true;
-        isFinished = false;
 
         int[][][] shapes = BlokusPiece.getAllShapes();
         pieces = new LinkedList<>();
@@ -42,13 +40,5 @@ public class BlokusPlayer {
 
     public void setFirstMove(boolean firstMove) {
         this.firstMove = firstMove;
-    }
-
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished() {
-        this.isFinished = true;
     }
 }

@@ -14,6 +14,8 @@ public class Server {
     private GameLogic gameLogic;
     private ServerSocket serverSocket;
 
+    private int numberOfClients = 4;
+
     private Server() {}
 
     public static Server getInstance() {
@@ -54,7 +56,7 @@ public class Server {
                     log("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                     log("Client " + clientNo + "'s IP Address is " + inetAddress.getHostAddress());
 
-                    if (clientNo >= 3) {
+                    if (clientNo >= numberOfClients) {
                         startGame();
                         gameLogic.closeServer();
                         return;
@@ -120,5 +122,9 @@ public class Server {
 
     public ServerSocket getServerSocket() {
         return serverSocket;
+    }
+
+    public void setNumberOfClients(int numberOfClients) {
+        this.numberOfClients = numberOfClients;
     }
 }
