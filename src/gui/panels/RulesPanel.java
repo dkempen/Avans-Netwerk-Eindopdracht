@@ -34,7 +34,9 @@ public class RulesPanel extends JPanel implements Panel {
 
         Frame.getInstance().addText(g2d,"2. The first player (blue) places any of his/her pieces in a corner square.",20,Frame.WIDTH/2 - 105 , 255,true);
 
-        Frame.getInstance().addText(g2d,"3. Play continues as each player lays down one piece during a turn.",20,Frame.WIDTH/2 - 122,280,true);
+        Frame.getInstance().addText(g2d,"If you want to place a piece on the board in needs to be alligned with the corner of your pieces",20,Frame.WIDTH/2 + 10,280,true);
+
+        Frame.getInstance().addText(g2d,"3. Play continues as each player lays down one piece during a turn.",20,Frame.WIDTH/2 - 122,305,true);
 
 
     }
