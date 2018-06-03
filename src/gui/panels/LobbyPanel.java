@@ -76,8 +76,8 @@ public class LobbyPanel extends JPanel implements Panel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.BLACK);
         Frame.getInstance().addText(g2d, "LobbyPanel", 50, Frame.WIDTH / 2 - 30, 100, true);
-        Frame.getInstance().addText(g2d,"Number of players: ", 30, 800,750,true);
-        startbutton = Frame.getInstance().addButton(g2d, "Start game", 50, Frame.HEIGHT/2 -40, 650, false, startButtonSelected);
+        Frame.getInstance().addText(g2d,"Number of players: ", 30, 675,750,true);
+        startbutton = Frame.getInstance().addButton(g2d, "Start game", 50, Frame.HEIGHT/2 -150, 650, false, startButtonSelected);
     }
 
 }
