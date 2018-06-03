@@ -29,7 +29,12 @@ public class Frame extends JFrame {
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 800;
+
     public static final Color BACKGROUND_COLOR = Color.DARK_GRAY;
+    public static final Color TEXT_COLOR = Color.DARK_GRAY;
+    public static final Color SHADOW_COLOR = Color.DARK_GRAY;
+    public static final Color BUTTON_COLOR = Color.DARK_GRAY;
+    public static final Color BUTTON_HIGHLIGHT_COLOR = Color.DARK_GRAY;
 
     private Font font;
 
@@ -165,7 +170,7 @@ public class Frame extends JFrame {
             x -= itemShape.getBounds2D().getCenterX();
         item.translate(x, y);
         itemShape = item.createTransformedShape(itemShape);
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(TEXT_COLOR);
 
         // Add shadow
         Shape shadowShape = itemShape;
@@ -203,15 +208,15 @@ public class Frame extends JFrame {
         Rectangle2D rectangle = new Rectangle2D.Double(bounds.getMinX() - padding, bounds.getMinY() - padding,
                 bounds.getWidth() + padding * 2, bounds.getHeight() + padding * 2);
         if (selected)
-            g2d.setColor(Color.LIGHT_GRAY);
+            g2d.setColor(BUTTON_HIGHLIGHT_COLOR);
         else
-            g2d.setColor(Color.GRAY);
+            g2d.setColor(BUTTON_COLOR);
 
         // Draw
         g2d.fill(rectangle);
-        g2d.setColor(Color.GRAY);
+        g2d.setColor(SHADOW_COLOR);
         g2d.fill(shadowShape);
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(TEXT_COLOR);
         g2d.fill(itemShape);
 
         return rectangle;

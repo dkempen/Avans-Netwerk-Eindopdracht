@@ -110,6 +110,8 @@ public class Client {
                 }
             } catch (IOException ex) {
                 log(ex.toString() + '\n');
+                isActive = false;
+                Frame.getInstance().setPanel(PanelType.MENU_PANEL);
             }
         }).start();
     }
